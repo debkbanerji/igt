@@ -1,0 +1,18 @@
+# Test Directory
+Homework - Sample
+
+# Intellij Based IDEs
+.idea
+
+#File Manager
+.directory
+
+# System Files
+.DS_Store
+Thumbs.db
+
+# Release Builds
+release-builds
+
+# Installers
+installers

@@ -1,0 +1,11 @@
+{
+    "name": "igt",
+    "productName": "igt",
+    "main": "electron.js",
+    "description": "Intelligent Grading Tool",
+    "dependencies": {
+        "decompress": "^4.2.0",
+        "dictionary-en-us": "^2.0.0",
+        "nspell": "^1.0.3"
+    }
+}

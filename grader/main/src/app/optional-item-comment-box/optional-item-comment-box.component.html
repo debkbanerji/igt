@@ -1,0 +1,20 @@
+<div>
+    <form (ngSubmit)="applyComment()" [formGroup]="commentGroup">
+        <div style="width:100%; display:table">
+            <textarea class="form-control optional-item-comment" placeholder="Comments"
+                      [matAutocomplete]="rubricItemAuto" matInput
+                      [formControl]="commentGroup.controls['comment']">
+            </textarea>
+            <mat-autocomplete #rubricItemAuto="matAutocomplete">
+                <mat-option
+                    *ngFor="let option of filteredCommentOptions | async"
+                    [value]="option">
+                    {{ option }}
+                </mat-option>
+            </mat-autocomplete>
+            <button mat-raised-button class="btn btn-success optional-item-comment-apply-button">
+                Add Comment
+            </button>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,251 @@
+#main-content-row {
+    width: 100vw !important;
+}
+
+.main-navbar {
+    padding-top: 10px;
+}
+
+.navbar-brand-black {
+    color: black;
+}
+
+.navbar-brand-white {
+    color: white;
+}
+
+.back-arrow {
+    font-weight: bold;
+    font-size: x-large;
+    float: left;
+    padding-top: 12px;
+    padding-right: 0;
+    margin: 0;
+    cursor: pointer;
+    vertical-align: middle;
+}
+
+.submission-details-controls {
+    display: flex;
+    float: right;
+    margin-top: 15px;
+}
+
+.show-details-toggle {
+    margin-top: 3px;
+    margin-left: 6px;
+}
+
+.submissions-summary-container {
+    float: left;
+    width: 100%;
+    padding-top: 4px;
+    padding-bottom: 10px;
+    display: inline-block;
+}
+
+.submissions-summary-chip-list {
+    display: inline-block;
+}
+
+.run-all-code-button-container {
+    float: right;
+    display: inline-block;
+}
+
+.point-stats {
+    margin-top: 10px;
+    display: inline-block;
+    width: 100%;
+}
+
+.points-stats-chip-list {
+    display: inline-block;
+}
+
+.point-stats-not-done-toggle {
+    display: inline-block;
+    float: right;
+}
+
+.submission-container {
+    position: relative;
+    margin: 10px;
+    padding: 10px;
+}
+
+.summary-container {
+    margin: 10px;
+    padding: 2px 20px;
+}
+
+.search-summary-text {
+    padding-left: 20px;
+}
+
+.summary-content {
+    overflow: hidden
+}
+
+.search-container {
+    display: inline-block;
+    float: left;
+    padding-top: 4px;
+}
+
+#main-content-row {
+    overflow: hidden;
+    width: 100%;
+}
+
+.test-stats-panel {
+    margin-top: 10px;
+}
+
+.test-stats-panel-heading {
+    font-size: 16px;
+    margin-top: 8px;
+    margin-bottom: 0;
+    margin-right: 9px;
+    vertical-align: middle;
+}
+
+
+.submission {
+    overflow: hidden
+}
+
+.done-grading {
+    background-color: #5cb85c;
+}
+
+.not-done-grading .tests-not-run {
+    background-color: #FFCA28;
+}
+
+.missing-submission-files {
+    background-color: #EF5350;
+}
+
+.did-not-compile {
+    background-color: #EF5350;
+}
+
+.code-not-run-container {
+    float: left;
+    font-size: smaller;
+    width: 100%;
+}
+
+.submission-statistics-container {
+    float: left;
+    margin-top: 4px;
+    width: 100%;
+}
+
+.final-score-bar {
+    margin-top: 8px;
+    margin-bottom: 2px;
+}
+
+.done-grading-chips {
+    display: inline-block;
+    width: 100%;
+}
+
+.not-done-grading-text {
+    margin-top: 12px;
+    margin-bottom: 8px;
+    display: inline-block;
+    width: 100%;
+}
+
+.graded-time-chip-list {
+    float: right;
+    display: inline-block;
+}
+
+.progress {
+    height: 4px !important;
+}
+
+.tests-not-run-text {
+    font-style: italic;
+    font-size: small;
+    padding-left: 4px;
+}
+
+.submission-tests-container {
+    margin-top: 12px;
+}
+
+.test-icon {
+    font-size: x-large;
+    padding-left: 4px;
+}
+
+.submission-name-container {
+    float: left;
+    padding-top: 7px;
+    margin: 0;
+}
+
+.submission-name {
+    font-weight: bold;
+    font-size: large;
+}
+
+.submission-metadata {
+    float: right;
+    display: inline-block;
+}
+
+.final-score-text {
+    font-weight: bold;
+}
+
+.navbar-button {
+    margin: 7px;
+}
+
+.submissions-heading {
+    font-size: 18px;
+    padding: 6px 15px 2px;
+    margin: 0;
+    white-space: nowrap;
+}
+
+.base-directory-name {
+    padding-left: 15px;
+}
+
+.start-grading-container {
+    float: right;
+    padding: 2px;
+}
+
+.start-grading-button-contents {
+    font-size: small;
+}
+
+.start-grading-button-text {
+    font-size: medium;
+}
+
+div.mat-input-wrapper {
+    padding-bottom: 0 !important;
+}
+
+.loading-summary-content {
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.not-run-submission-summary {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+mat-progress-spinner {
+    margin: 0;
+}

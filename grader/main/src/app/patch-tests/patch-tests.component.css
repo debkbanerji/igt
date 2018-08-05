@@ -1,0 +1,31 @@
+.home-button {
+    cursor: pointer;
+}
+
+.main-heading {
+    font-size: 18px;
+    padding: 17px 15px 15px;
+    margin: 0;
+    white-space: nowrap;
+}
+
+.main-heading-text {
+    padding-top: 20px;
+}
+
+.main-content {
+    text-align: center;
+    /*vertical-align: middle;*/
+    margin: auto;
+    position: absolute;
+    top: 30vh;
+    width: 100%;
+}
+
+.patch-button {
+    font-size: 20px;
+}
+
+.text-red {
+    color: #E53935 !important;
+}

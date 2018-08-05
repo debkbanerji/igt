@@ -1,0 +1,174 @@
+<!--<div id="particles-js-target"></div>-->
+<div [ngClass]="{'dark-theme': settings.isDarkTheme}">
+    <div [ngClass]="{'dark-background': settings.isDarkTheme}"
+         id="particles-js-target"></div>
+    <div class="row" id="main-content-row">
+        <div class="col-xs-12">
+            <div class="container-fluid main-content">
+                <div>
+                    <h2>Settings</h2>
+                    <mat-card>
+                        <mat-card-content>
+                            <span>Here you can configure settings that should persist across multiple assignments</span>
+                            <br>
+                            <span class="text-red"><b>Warning: </b>If you don't set some of this stuff up properly (the stuff
+                            that corresponds to the language you'll be using) bad things will happen.</span>
+                            <br>
+                            <span>You don't need to enter settings for languages you won't be using, but if you choose to use
+                            them in the future, you'll have to return to this page.</span>
+                        </mat-card-content>
+                    </mat-card>
+                </div>
+                <mat-card>
+                    <mat-card-content>
+                        <h4>
+                            Grader Information
+                        </h4>
+                        <p>Information used to sign the comments given to each student</p>
+                        <div class="grader-config-input-container">
+                            <b class="grader-config-input-label">Your Name</b>
+                            <br><input [ngClass]="{'dark-form-control': settings.isDarkTheme}"
+                                       class="grader-config-input form-control" placeholder="George P. Burdell"
+                                       [(ngModel)]="settings.graderName">
+                        </div>
+                    </mat-card-content>
+                </mat-card>
+                <mat-card>
+                    <mat-card-content>
+                        <h4>Language Setup <b class="text-red">(Important)</b></h4>
+                        <P class="text-red">Make sure you fill this section out correctly as the commands specified here
+                            will be used to
+                            process submissions.</P>
+                        <P>You can safely ignore languages you won't be using, but be sure to come back to this page and
+                            set
+                            them up if you choose to use them in the future.</P>
+                        <mat-card>
+                            <mat-card-content>
+                                <div class="grader-config-input-container">
+                                    <p class="language-header">Java Setup</p>
+                                    <b class="grader-config-input-label">Java Command</b>
+                                    <br>
+                                    "<span class="grader-config-info small-padding-right small-padding-left">
+                                    <input [ngClass]="{'dark-form-control': settings.isDarkTheme}"
+                                           class="form-control grader-config-input"
+                                           placeholder="java"
+                                           [(ngModel)]="settings.javaCommand">
+                                </span>"
+                                    <br>
+                                    <br>
+                                    <b class="grader-config-input-label">Java Compiler Command</b>
+                                    <br>
+                                    "<span class="grader-config-info small-padding-right small-padding-left">
+                                    <input [ngClass]="{'dark-form-control': settings.isDarkTheme}"
+                                           class="form-control grader-config-input"
+                                           placeholder="javac"
+                                           [(ngModel)]="settings.javaCompilerCommand">
+                                </span>"
+                                </div>
+                            </mat-card-content>
+                        </mat-card>
+                        <mat-card>
+                            <mat-card-content>
+                                <div class="grader-config-input-container">
+                                    <p class="language-header">Python 3 Setup</p>
+                                    <b class="grader-config-input-label">Python Interpreter Command</b>
+                                    <br>
+                                    "<span class="grader-config-info small-padding-right small-padding-left">
+                                    <input [ngClass]="{'dark-form-control': settings.isDarkTheme}"
+                                           class="form-control grader-config-input"
+                                           placeholder="python"
+                                           [(ngModel)]="settings.python3Command">
+                                </span>"
+                                    <br>
+                                    <p>
+                                        <span class="text-red">Warning: It is highly recommended that you use an interpreter that supports sandboxing, such as a sandboxed version of PyPy</span>
+                                    </p>
+                                </div>
+                            </mat-card-content>
+                        </mat-card>
+                    </mat-card-content>
+                </mat-card>
+                <mat-card>
+                    <mat-card-content>
+                        <h4>IDE Launchers (Optional)</h4>
+                        <div>
+                            <p>Fill these out if you want the autograder to be able to open projects in Intellij based
+                                IDEs
+                                through the autograder. It is highly recommended that you use the suggested IDE for each
+                                language, but other Intellij based IDEs may still work.</p>
+                            <p>In order to generate each script, open the IDE and go to <b>Tools > Create Command-line
+                                Launcher</b></p>
+                            <p>If you are on windows, this tool may not be available. In this case, you can instead
+                                provide
+                                the path to the IDE's .exe file</p>
+                        </div>
+                        <mat-card>
+                            <mat-card-content>
+                                <div class="grader-config-input-container">
+                                    <b class="grader-config-input-label">Intellij Script (Used to open Java
+                                        Projects)</b>
+                                    <br>
+                                    <div class="grader-config-input">
+                                        <input [ngClass]="{'dark-form-control': settings.isDarkTheme}"
+                                               class="form-control"
+                                               placeholder="/usr/local/bin/idea"
+                                               [(ngModel)]="settings.intellijScript">
+                                        <br>
+                                    </div>
+                                </div>
+                                <div class="grader-config-input-container">
+                                    <b class="grader-config-input-label">Pycharm Script (Used to open Python
+                                        Projects)</b>
+                                    <br>
+                                    <div class="grader-config-input">
+                                        <input [ngClass]="{'dark-form-control': settings.isDarkTheme}"
+                                               class="form-control"
+                                               placeholder="/usr/local/bin/pycharm"
+                                               [(ngModel)]="settings.pycharmScript">
+                                        <br>
+                                    </div>
+                                </div>
+                            </mat-card-content>
+                        </mat-card>
+                    </mat-card-content>
+                </mat-card>
+                <mat-card>
+                    <mat-card-content>
+                        <h4>Miscellaneous</h4>
+                        <mat-slide-toggle [(ngModel)]="settings.enableParticles">
+                            Enable particle effects
+                        </mat-slide-toggle>
+                        <br>
+                        <br>
+                        <mat-slide-toggle [(ngModel)]="settings.isDarkTheme">
+                            Enable dark mode
+                        </mat-slide-toggle>
+                        <br>
+                        <br>
+                        <button mat-raised-button class="btn-info btn-raised" (click)="openDevTools()">
+                            <span>Open developer tools</span>
+                        </button>
+                    </mat-card-content>
+                </mat-card>
+            <div id="finish-button-outer-container">
+                <div id="finish-button-container">
+                    <!--<button mat-raised-button *ngIf="!mustInitialize"-->
+                    <!--class="btn-danger btn-raised finish-button" (click)="exitWithoutSaving()">-->
+                    <!--Exit Without Saving-->
+                    <!--</button>-->
+                    <!--<button mat-raised-button *ngIf="!mustInitialize"-->
+                    <!--class="btn-danger btn-raised finish-button" (click)="resetSettings()">-->
+                    <!--Delete Stored Settings-->
+                    <!--</button>-->
+                    <button mat-raised-button
+                            *ngIf="settings.graderName
+                             && settings.graderName.length > 0"
+                                class="btn-success btn-raised finish-button" (click)="saveSettings()">
+                            Save Settings
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

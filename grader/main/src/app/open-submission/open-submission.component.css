@@ -1,0 +1,17 @@
+#loading-container {
+    text-align: center;
+    align-content: center;
+    /*vertical-align: middle;*/
+    margin: auto;
+    position: absolute;
+    top: 30vh;
+    width: 100%;
+}
+
+#loading-spinner-container {
+    display: inline-block;
+}
+
+#loading-spinner {
+    margin: 0;
+}

@@ -1,0 +1,15 @@
+<div [ngClass]="{'dark-theme': graderSettings.isDarkTheme}">
+    <div [ngClass]="{'dark-background': graderSettings.isDarkTheme}">
+        <div class="inner-dialog-container">
+            <h1 mat-dialog-title>{{data.title}}</h1>
+            <div mat-dialog-content>
+                <p>{{data.info}}</p>
+                <p class="text-red">{{data.warningInfo}}</p>
+            </div>
+            <div mat-dialog-actions>
+                <button mat-raised-button class="btn btn-danger" [mat-dialog-close]="false">{{data.cancelText}}</button>
+                <button mat-raised-button class="btn btn-success" [mat-dialog-close]="true">{{data.acceptText}}</button>
+            </div>
+        </div>
+    </div>
+</div>

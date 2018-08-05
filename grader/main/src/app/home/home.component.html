@@ -1,0 +1,319 @@
+<div [ngClass]="{'dark-theme': graderSettings.isDarkTheme}">
+    <div [ngClass]="{'dark-background': graderSettings.isDarkTheme}"
+         id="particles-js-target"></div>
+    <mat-chip-list>
+        <!--To force rendering of chips outside lists-->
+    </mat-chip-list>
+    <div id="main-content-row">
+        <nav class="navbar navbar-default main-navbar" [ngClass]="{'dark-navbar': graderSettings.isDarkTheme}">
+            <div class="container-fluid">
+                <a class="navbar-brand back-arrow" [ngClass]="{
+                        'navbar-brand-black': !graderSettings.isDarkTheme,
+                        'navbar-brand-white': graderSettings.isDarkTheme
+                        }"
+                   (click)="selectSubmission()"
+                   *ngIf="!isCurrentlyRunningSubmissions">
+                    <span class="glyphicon glyphicon-circle-arrow-left"></span>
+                </a>
+                <div class="navbar-header">
+                    <h2 class="submissions-heading">Submissions</h2>
+                    <small class="base-directory-name">{{submissionsDirectory}}</small>
+                </div>
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav navbar-right" *ngIf="!isCurrentlyRunningSubmissions">
+                        <!--<li>-->
+                        <!--<span matTooltip="Not implemented yet">-->
+                        <!--<button mat-raised-button class="btn-info btn-raised navbar-button" disabled>-->
+                        <!--Update Tests-->
+                        <!--</button>-->
+                        <!--</span>-->
+                        <!--</li>-->
+                        <li>
+                            <button mat-raised-button class="btn-info btn-raised navbar-button"
+                                    (click)="exportGrades()">
+                                Export Grades
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <div class="row">
+            <div class="col-xs-12" *ngIf="!isCurrentlyRunningSubmissions">
+                <mat-card class="summary-container">
+                    <mat-card-content class="summary-content">
+                        <div>
+                            <div class="search-container">
+                                <mat-form-field>
+                                    <input matInput #myInput placeholder="Search Submissions" [(ngModel)]="searchName"
+                                           (input)="filterItem(myInput.value)">
+                                </mat-form-field>
+                            </div>
+                            <div class="submission-details-controls">
+                                <mat-chip-list *ngIf="showDetails">
+                                    <mat-chip disableRipple>
+                                        Base points: {{graderConfig.basePoints}}
+                                    </mat-chip>
+                                    <mat-chip disableRipple>
+                                        Max points: {{graderConfig.maxPoints}}
+                                    </mat-chip>
+                                </mat-chip-list>
+                                <mat-slide-toggle class="show-details-toggle"
+                                                  [(ngModel)]="showDetails">
+                                    Show details
+                                </mat-slide-toggle>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="submissions-summary-container">
+                            <mat-chip-list class="submissions-summary-chip-list">
+                                <mat-chip disableRipple>
+                                    Displaying {{filteredSubmissionList.length}} of {{submissionList.length}}
+                                    submissions
+                                </mat-chip>
+                                <mat-chip disableRipple *ngIf="numDoneSubmissions === submissionList.length">
+                                    Done grading all submissions
+                                </mat-chip>
+                                <mat-chip disableRipple *ngIf="numDoneSubmissions < submissionList.length">
+                                    Done grading {{numDoneSubmissions}} of {{submissionList.length}} submissions
+                                </mat-chip>
+                                <mat-chip disableRipple *ngIf="notRunSubmissionList.length === 0">
+                                    Finished running code for all submissions
+                                </mat-chip>
+                                <mat-chip disableRipple *ngIf="notRunSubmissionList.length !== 0">
+                                    Finished running code for {{submissionList.length - notRunSubmissionList.length}} of
+                                    {{submissionList.length}} submissions
+                                </mat-chip>
+                            </mat-chip-list>
+                            <div class="run-all-code-button-container" *ngIf="notRunSubmissionList.length !== 0">
+                                <button mat-raised-button class="btn-success btn-raised"
+                                        (click)="runAgentForAllNotRunSubmissions()">
+                                    Run code for {{notRunSubmissionList.length}} {{notRunSubmissionList.length === 1 ?
+                                    'submission':'submissions'}}
+                                </button>
+                            </div>
+                            <div *ngIf="showDetails" class="point-stats">
+                                <mat-chip-list *ngIf="!includeNotDoneForPointStats" class="points-stats-chip-list">
+                                    <mat-chip disableRipple>
+                                        Average final score: {{doneFinalScoreAverage.toFixed(2)}}
+                                    </mat-chip>
+                                    <mat-chip disableRipple>
+                                        Average main rubric item points: {{doneMainRubricItemAverage.toFixed(2)}}
+                                    </mat-chip>
+                                    <mat-chip disableRipple>
+                                        Average optional rubric item points:
+                                        {{doneOptionalRubricItemAverage.toFixed(2)}}
+                                    </mat-chip>
+                                    <mat-chip disableRipple>
+                                        Average point adjustment: {{donePointAdjustmentAverage.toFixed(2)}}
+                                    </mat-chip>
+                                </mat-chip-list>
+                                <mat-chip-list *ngIf="includeNotDoneForPointStats" class="points-stats-chip-list">
+                                    <mat-chip disableRipple>
+                                        Average final score: {{finalScoreAverage.toFixed(2)}}
+                                    </mat-chip>
+                                    <mat-chip disableRipple>
+                                        Average main rubric item points: {{mainRubricItemAverage.toFixed(2)}}
+                                    </mat-chip>
+                                    <mat-chip disableRipple>
+                                        Average optional rubric item points: {{optionalRubricItemAverage.toFixed(2)}}
+                                    </mat-chip>
+                                    <mat-chip disableRipple>
+                                        Average point adjustment: {{pointAdjustmentAverage.toFixed(2)}}
+                                    </mat-chip>
+                                </mat-chip-list>
+                                <mat-slide-toggle
+                                    class="point-stats-not-done-toggle"
+                                    [(ngModel)]="includeNotDoneForPointStats">
+                                    Include not done
+                                </mat-slide-toggle>
+                            </div>
+                            <div
+                                [hidden]="!showDetails"
+                                *ngIf="this.graderConfig.gradingStyle === 'tests' && numTestRunSubmissions > 0"
+                                class="test-stats-panel">
+                                <mat-expansion-panel (opened)="testStatsPanelOpened = true"
+                                                     (closed)="testStatsPanelOpened = false">
+                                    <mat-expansion-panel-header>
+                                        <h2 class="test-stats-panel-heading">Test Stats</h2>
+                                        <span *ngIf="testStatsPanelOpened">
+                                            <mat-chip disableRipple>Ran tests for {{numTestRunSubmissions}}
+                                                submissions
+                                            </mat-chip>
+                                        </span>
+                                    </mat-expansion-panel-header>
+                                    <mat-form-field>
+                                        <mat-select placeholder="Sort by"
+                                                    (selectionChange)="sortTestNameList(testStatsSelectedSortCriteria)"
+                                                    [(ngModel)]="testStatsSelectedSortCriteria">
+                                            <mat-option *ngFor="let option of (testStatSortOptions | keys)"
+                                                        [value]="option">
+                                                {{testStatSortOptions[option]}}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                    <div *ngFor="let test of sortedTestStatList">
+                                        <b>{{test}}</b>
+                                        <small> - {{testResultsMap[test].successes}}
+                                            {{testResultsMap[test].successes === 1 ? 'success' : 'successes'}}
+                                            <span> ({{(100 * testResultsMap[test].successes / numTestRunSubmissions) + '%'}})</span>
+                                        </small>
+                                        <div class="progress progress-bar-danger">
+                                            <div class="progress-bar progress-bar-success"
+                                                 [ngStyle]="{ 'width': (100 * testResultsMap[test].successes / numTestRunSubmissions) + '%' }"></div>
+                                        </div>
+                                    </div>
+                                </mat-expansion-panel>
+                            </div>
+                        </div>
+                    </mat-card-content>
+                </mat-card>
+            </div>
+            <div class="col-xs-12" *ngIf="!isCurrentlyRunningSubmissions">
+                <mat-card class="submission-container" *ngFor="let submission of filteredSubmissionList">
+                    <mat-card-content class="submission">
+                        <div>
+                            <div class="submission-name-container" [ngClass]="{'text-green': submission.done}">
+                                <span class="submission-name">
+                                    <span class="glyphicon glyphicon-ok" *ngIf="submission.done"
+                                          matTooltip="Done grading"
+                                          style="font-size: 15px">
+                                    </span>
+                                    {{submission.directoryName}}
+                                </span>
+                                <span class="code-not-run-container" *ngIf="!submission.agentRun && !showDetails">
+                                    Code not run
+                                </span>
+                            </div>
+                            <div class="start-grading-container"
+                                 (click)="gradeSubmission(submission.directoryName)">
+                                <button mat-raised-button class="btn-success btn-raised">
+                                    <span class="start-grading-button-contents">
+                                        <span class="glyphicon glyphicon-pencil"></span>
+                                        <span class="start-grading-button-text">
+                                            Grade
+                                        </span>
+                                    </span>
+                                </button>
+                            </div>
+                        </div>
+                        <br>
+                        <br>
+                        <div class="submission-statistics-container" *ngIf="showDetails">
+                            <mat-chip-list *ngIf="!submission.agentRun">
+                                <mat-chip disableRipple>Code not run</mat-chip>
+                            </mat-chip-list>
+                            <div *ngIf="submission.agentRun">
+                                <div *ngIf="submission.done">
+                                    <div class="done-grading-chips">
+                                        <mat-chip-list style="display: inline-block">
+                                            <mat-chip disableRipple>
+                                                <span class="final-score-text">
+                                                    Final Score: {{submission.finalScore}}
+                                                </span>
+                                            </mat-chip>
+                                            <mat-chip disableRipple>
+                                                Applied main item points: <span [ngClass]="{
+                                                            'text-red': submission.appliedRubricItemPoints < 0,
+                                                            'text-green': submission.appliedRubricItemPoints > 0
+                                                        }">
+                                            {{submission.appliedRubricItemPoints}}
+                                                </span>
+                                            </mat-chip>
+                                            <mat-chip disableRipple>
+                                                Optional item points: <span [ngClass]="{
+                                                            'text-red': submission.optionalRubricItemPoints < 0,
+                                                            'text-green': submission.optionalRubricItemPoints > 0
+                                                        }">
+                                                    {{submission.optionalRubricItemPoints}}
+                                                </span>
+                                            </mat-chip>
+                                            <mat-chip disableRipple>
+                                                Point adjustment: <span [ngClass]="{
+                                                            'text-red': submission.pointAdjustmentItemPoints < 0,
+                                                            'text-green': submission.pointAdjustmentItemPoints > 0
+                                                        }">
+                                                    {{submission.pointAdjustmentItemPoints}}
+                                                </span>
+                                            </mat-chip>
+                                        </mat-chip-list>
+                                        <mat-chip-list class="graded-time-chip-list" *ngIf="submission.lastGradedTime">
+                                            <mat-chip disableRipple>Last graded: {{submission.lastGradedTime | date: 'short'}}
+                                            </mat-chip>
+                                        </mat-chip-list>
+                                    </div>
+                                    <div class="final-score-bar">
+                                        <!--<mat-progress-bar mode="determinate"-->
+                                        <!--[value]="100 * submission.finalScore / graderConfig.maxPoints"></mat-progress-bar>-->
+                                        <div class="progress progress-bar-danger">
+                                            <div class="progress-bar progress-bar-success"
+                                                 [ngStyle]="{ 'width': (100 * submission.finalScore / graderConfig.maxPoints) + '%' }"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div *ngIf="!submission.done" class="not-done-grading-text">
+                                    <mat-chip-list style="display: inline-block">
+                                        <mat-chip disableRipple>Not done grading</mat-chip>
+                                    </mat-chip-list>
+                                    <mat-chip-list class="graded-time-chip-list" *ngIf="submission.lastGradedTime">
+                                        <mat-chip disableRipple>Last graded: {{submission.lastGradedTime | date: 'short'}}</mat-chip>
+                                    </mat-chip-list>
+                                </div>
+                                <div *ngIf="graderConfig.gradingStyle === 'tests'" class="submission-tests-container">
+                                    <div *ngIf="!submission.testData" class="tests-not-run-text">
+                                        No test data
+                                    </div>
+                                    <div *ngIf="submission.testData">
+                                        <span *ngFor="let test of (submission.testData | keys)">
+                                            <span class="glyphicon glyphicon-ok-circle text-green test-icon"
+                                                  *ngIf="submission.testData[test] === 'success'"
+                                                  matTooltip="Passed '{{test}}'">
+                                            </span>
+                                            <span class="glyphicon glyphicon-remove-circle text-red test-icon"
+                                                  *ngIf="submission.testData[test] !== 'success'"
+                                                  matTooltip="Failed '{{test}}'">
+                                            </span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </mat-card-content>
+                </mat-card>
+            </div>
+            <div class="col-xs-12" *ngIf="isCurrentlyRunningSubmissions">
+                <mat-card class="summary-container">
+                    <mat-card-content class="loading-summary-content">
+                        <h3>
+                            Processing submission {{min(currentlyRunningSubmissionIndex + 1,
+                            notRunSubmissionList.length)}} of {{notRunSubmissionList.length}}
+                        </h3>
+                        <mat-progress-bar
+                            mode="buffer"
+                            [value]="100 * currentlyRunningSubmissionIndex / notRunSubmissionList.length"
+                            [bufferValue]="100 * min((currentlyRunningSubmissionIndex + 1), notRunSubmissionList.length) / notRunSubmissionList.length">
+                        </mat-progress-bar>
+                    </mat-card-content>
+                </mat-card>
+            </div>
+            <div class="col-xs-12" *ngIf="isCurrentlyRunningSubmissions">
+                <mat-card class="summary-container" *ngFor="let submission of notRunSubmissionList; let i = index;">
+                    <mat-card-content class="not-run-submission-summary">
+                        <div class="submission-name">
+                            <span class="glyphicon glyphicon-ok" *ngIf="currentlyRunningSubmissionIndex > i"
+                                  matTooltip="Done grading"
+                                  style="font-size: 15px">
+                            </span>
+                            {{submission.directoryName}}
+                        </div>
+                        <mat-progress-bar *ngIf="currentlyRunningSubmissionIndex === i" style="margin-top: 10px"
+                                          mode="indeterminate"
+                        ></mat-progress-bar>
+                        <small *ngIf="currentlyRunningSubmissionIndex < i" style="margin-top: 10px">Not yet processed
+                        </small>
+                    </mat-card-content>
+                </mat-card>
+            </div>
+        </div>
+    </div>
+</div>

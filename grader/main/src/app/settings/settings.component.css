@@ -1,0 +1,46 @@
+.main-content {
+    margin: auto;
+    width: 100%;
+    padding: 4px;
+}
+
+#finish-button-outer-container {
+    width: 100%;
+    text-align: center;
+    margin-top: 8px;
+}
+
+mat-card {
+    margin: 4px
+}
+
+.grader-config-info {
+    width: 60%;
+    margin: 0;
+    display: inline-block;
+}
+
+.grader-config-input-label {
+    display: inline-block;
+}
+
+.grader-config-input-container {
+    display: inline-block;
+    padding-top: 0;
+    width: 100%;
+}
+
+.language-header {
+    font-size: large;
+    font-weight: bold;
+}
+
+#finish-button-container {
+    margin: 15px;
+    display: inline-block;
+}
+
+.finish-button {
+    margin-left: 4px;
+    margin-right: 4px;
+}

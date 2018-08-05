@@ -1,0 +1,93 @@
+#main-content-row {
+    height: 99vh;
+    padding: 0;
+    position: relative;
+    margin-right: 0;
+}
+
+.bottom-left-container {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    margin-left: 30px;
+    margin-bottom: 10px;
+}
+
+.bottom-right-container {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    margin-bottom: 10px;
+    text-align: right;
+}
+
+.bottom-button {
+    margin-bottom: 8px;
+}
+
+.dark-mode-toggle {
+    margin-left: 2px;
+}
+
+.main-content {
+    text-align: center;
+    /*vertical-align: middle;*/
+    margin: auto;
+    position: absolute;
+    top: 20px;
+    width: 100%;
+}
+
+.logo-main {
+    margin: auto;
+    height: 18vw;
+    padding-left: 6vw;
+}
+
+.row {
+    height: 90vh;
+    width: 98vw;
+    padding-left: 5vw;
+}
+
+.col-xs-12 {
+    height: 100%;
+    position: relative;
+}
+
+.grader-config-input {
+    width: 40%;
+    /*margin: 0;*/
+    display: inline-block;
+}
+
+.grader-config-info {
+    width: 60%;
+    margin: 0;
+    display: inline-block;
+}
+
+.grader-config-input-label {
+    display: inline-block;
+    width: 170px;
+    padding-top: 5px;
+    vertical-align: top;
+}
+
+.grader-config-input-container {
+    display: inline-block;
+    padding-top: 10px;
+    width: 100%;
+}
+
+.command-line-tool-path {
+    font-weight: bold;
+}
+
+.text-red {
+    color: #E53935 !important;
+}
+
+.external-link {
+    cursor: pointer;
+}

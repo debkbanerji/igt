@@ -1,0 +1,87 @@
+<div [ngClass]="{'dark-theme': graderSettings.isDarkTheme}">
+    <div [ngClass]="{'dark-background': graderSettings.isDarkTheme}"
+         id="particles-js-target"></div>
+    <div class="row" id="main-content-row">
+        <div class="col-xs-12">
+            <div class="container-fluid main-content">
+                <div>
+                    <img *ngIf="graderSettings.isDarkTheme" src="assets/images/logo_yellow.png" class="img logo-main"/>
+                    <img *ngIf="!graderSettings.isDarkTheme" src="assets/images/logo_blue.png" class="img logo-main"/>
+                    <h3>Intelligent Grading Tool</h3>
+                    <p>
+                        <small>v{{graderVersion}}</small>
+                    </p>
+                </div>
+                <div *ngIf="!showLoading && !canStartGrading">
+                    <button mat-raised-button disableRipple class="btn-info btn-raised"
+                            (click)="selectSubmissionsDirectory()">
+                        Select Submissions Directory
+                    </button>
+                    <br><br>
+                    <p>{{submissionDirText}}</p>
+                </div>
+                <div *ngIf="submissionDir && !graderFolderExists && !showLoading && !canStartGrading">
+                    <p>No prior grader information found. Please select directory containing support files</p>
+                    <button mat-raised-button disableRipple class="btn-info btn-raised"
+                            (click)="selectSupportFileDirectory()">
+                        Select Support File Directory
+                    </button>
+                    <br> <br>
+                    <p>{{supportFileDirText}}</p>
+                </div>
+                <!--<div *ngIf="showLoading">-->
+                <!--<p>{{loadingText}}</p>-->
+                <!--<mat-progress-bar-->
+                <!--class="example-margin"-->
+                <!--[value]="progressBarValue"></mat-progress-bar>-->
+                <!--</div>-->
+                <div *ngIf="showLoading">
+                    <p>Initializing directory...</p>
+                    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+                </div>
+                <div *ngIf="initializedGradingDirectory && !showLoading">
+                    <b>{{timeText}}</b>
+                    <br>
+                    <button mat-raised-button class="btn-success btn-raised" (click)="startGrading()">
+                        Grade Submissions in {{submissionDir}}
+                    </button>
+                </div>
+                <div *ngIf="!showLoading && submissionDir">
+                    <br>
+                    <button mat-raised-button class="btn-danger btn-raised" (click)="initializePage()">
+                        Clear
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="bottom-left-container">
+            <div>
+                <button mat-raised-button class="btn-info btn-raised bottom-button"
+                        (click)="openSettings()">
+                    <span>Settings</span>
+                </button>
+                <br>
+                <button mat-raised-button class="btn-info btn-raised bottom-button" (click)="openDevTools()">
+                    <span>Debug Console</span>
+                </button>
+                <br>
+                <mat-slide-toggle [(ngModel)]="graderSettings.isDarkTheme"
+                                  (change)="saveGraderSettings();"
+                                  class="dark-mode-toggle">
+                    Dark Mode
+                </mat-slide-toggle>
+            </div>
+        </div>
+        <div class="bottom-right-container">
+            <p>&#169; 2018 Deb Banerji</p>
+            <p>
+                <span class="external-link" (click)="openContactLink()">&#9993; Contact</span>
+            </p>
+            <p>
+                <span class="external-link" (click)="openSourceCodeLink()">
+                    <span class="glyphicon glyphicon-link"></span> Source Code
+                </span>
+            </p>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,52 @@
+<nav class="navbar navbar-default main-navbar" *ngIf="!showLoading">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand main-heading home-button" (click)="listSubmissions()"><span
+                class="glyphicon glyphicon-home"></span></a>
+            <h2 class="main-heading main-heading-text">Update Tests</h2>
+        </div>
+    </div>
+</nav>
+<div class="row">
+    <div class="col-xs-12">
+        <div class="container-fluid main-content">
+            <h3>Warning: make a backup of your grading directory before patching the tests, just in case there's an error in one or more files</h3>
+            <button mat-raised-button disableRipple class="btn-info btn-raised patch-button"
+                    *ngIf="!showLoading && !finishedPatching">
+                Select New Test File
+            </button>
+            <button mat-raised-button disableRipple class="btn-info btn-raised patch-button"
+                    (click)="listSubmissions()"
+                    *ngIf="finishedPatching">
+                Go Back
+            </button>
+            <br>
+            <br>
+            <b>{{errorText}}</b>
+            <b>{{timeText}}</b>
+            <div *ngIf="!showLoading && !finishedPatching">
+                <b class="text-red">Warning: selecting a new test file will
+                    overwrite the current test file. It is highly recommended that you backup the current grading data
+                    folder.</b>
+                <br>
+                <b>Note: Updating Tests does not update generated Intellij
+                    projects.</b>
+            </div>
+            <div *ngIf="showLoading">
+                <b>{{loadingText}}</b>
+                <br>
+                <mat-progress-bar
+                    [value]="progressBarValue">
+                </mat-progress-bar>
+            </div>
+        </div>
+    </div>
+</div>

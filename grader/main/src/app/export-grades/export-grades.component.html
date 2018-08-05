@@ -1,0 +1,131 @@
+<div [ngClass]="{'dark-theme': graderSettings.isDarkTheme}">
+    <div [ngClass]="{'dark-background': graderSettings.isDarkTheme}"
+         id="particles-js-target"></div>
+    <div>
+        <div id="main-content-row">
+            <nav class="navbar navbar-default main-navbar" [ngClass]="{'dark-navbar': graderSettings.isDarkTheme}">
+                <div class="container-fluid">
+                    <!-- Brand and toggle get grouped for better mobile display -->
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                                data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand main-heading home-button" (click)="listSubmissions()"><span
+                            class="glyphicon glyphicon-home"></span></a>
+                        <h2 class="main-heading main-heading-text">Export Grades</h2>
+                    </div>
+                </div>
+            </nav>
+            <mat-card class="header-card">
+                <mat-card-content class="header-card-content">
+                    <div class="export-container">
+                        <button mat-raised-button class="btn btn-success" (click)="exportDoneSubmissionsCSV()">
+                            Export <span *ngIf="!shouldIncludeNotDone">{{totalDoneSubmissions}}</span> <span
+                            *ngIf="shouldIncludeNotDone">{{totalDoneSubmissions + totalNotDoneSubmissions}}</span>
+                            Grades as
+                            CSV
+                        </button>
+                        <mat-checkbox [(ngModel)]="shouldIncludeNotDone" style="padding-left: 10px">
+                            Include Not Done
+                        </mat-checkbox>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+
+            <mat-card class="header-card">
+                <mat-card-content class="header-card-content">
+                    <div class="header-container">
+                        <mat-chip-list>
+                            <mat-chip disableRipple>{{totalDoneSubmissions + totalNotDoneSubmissions}} Total Submissions
+                            </mat-chip>
+                            <mat-chip disableRipple>{{totalDoneSubmissions}} Done</mat-chip>
+                            <mat-chip disableRipple>{{totalNotDoneSubmissions}} Not Done</mat-chip>
+                        </mat-chip-list>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+            <mat-card class="search-card">
+                <mat-card-content class="search-card-content">
+                    <div>
+                        <mat-form-field>
+                            <input matInput #submissionsSearchInput placeholder="Search Submissions"
+                                   [(ngModel)]="searchSubmissionsInput"
+                                   (input)="filterSubmissionsItem(submissionsSearchInput.value)">
+                        </mat-form-field>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+
+
+            <div class="mat-elevation-z8" id="main-content-table">
+                <mat-table [dataSource]="submissionsStatDataSource">
+                    <ng-container cdkColumnDef="directoryName">
+                        <mat-header-cell *cdkHeaderCellDef class="table-header"><span
+                            class="table-header">Submission</span>
+                        </mat-header-cell>
+                        <mat-cell *cdkCellDef="let row">
+                            <h4>
+                    <span class="glyphicon glyphicon-pencil" style="cursor: pointer"
+                          (click)="gradeSubmission(row.directoryName)">
+
+                    </span>
+                                <span>
+                        {{row.directoryName}}
+                    </span>
+                            </h4>
+                        </mat-cell>
+                    </ng-container>
+
+
+                    <ng-container cdkColumnDef="points">
+                        <mat-header-cell *cdkHeaderCellDef><span
+                            class="table-header">Points (Maximum: {{maxPoints}})</span>
+                        </mat-header-cell>
+                        <mat-cell *cdkCellDef="let row">
+                            <div *ngIf="row.done">
+                                <p id="{{row.sanitizedDirectoryName + '_points'}}" class="points-text">
+                                    {{row.points}}
+                                </p>
+                                <button mat-raised-button class="clipboard-btn btn btn-info"
+                                        [attr.data-clipboard-target]="'#' + row.sanitizedDirectoryName + '_points'">
+                                    <span class="glyphicon glyphicon-copy"></span>
+                                </button>
+                            </div>
+                            <span *ngIf="!row.done" class="text-red">
+                    Not done grading
+                </span>
+                        </mat-cell>
+                    </ng-container>
+
+                    <ng-container cdkColumnDef="comments">
+                        <mat-header-cell *cdkHeaderCellDef><span class="table-header">Comments</span>
+                        </mat-header-cell>
+                        <mat-cell *cdkCellDef="let row">
+                            <div style="height: auto; padding: 10px">
+                                <div *ngIf="row.done">
+                                    <p id="{{row.sanitizedDirectoryName + '_comments'}}" class="comments-text">
+                                        {{row.comments}}
+                                    </p>
+                                    <button mat-raised-button class="clipboard-btn btn btn-info"
+                                            [attr.data-clipboard-target]="'#' + row.sanitizedDirectoryName + '_comments'">
+                                        <span class="glyphicon glyphicon-copy"></span>
+                                    </button>
+                                </div>
+                                <span *ngIf="!row.done" class="text-red">
+                        Not done grading
+                    </span>
+                            </div>
+                        </mat-cell>
+                    </ng-container>
+
+                    <mat-header-row *cdkHeaderRowDef="submissionsStatsColumns"></mat-header-row>
+                    <mat-row *cdkRowDef="let row; columns: submissionsStatsColumns;" style="height: auto"></mat-row>
+                </mat-table>
+            </div>
+        </div>
+    </div>
+</div>

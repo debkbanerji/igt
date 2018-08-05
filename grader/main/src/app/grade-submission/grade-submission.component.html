@@ -1,0 +1,961 @@
+<div id="outer-container" [ngClass]="{'dark-theme': graderSettings.isDarkTheme}">
+    <mat-chip-list>
+        <!--To force rendering of chips outside lists-->
+    </mat-chip-list>
+    <div [ngClass]="{'dark-background': graderSettings.isDarkTheme}"
+         id="particles-js-target"></div>
+    <div class="row main-content-row">
+        <nav class="navbar navbar-default main-navbar" [ngClass]="{'dark-navbar': graderSettings.isDarkTheme}">
+            <div class="container-fluid navbar-container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                            data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand submission-name-container" [ngClass]="{
+                        'navbar-brand-black': !graderSettings.isDarkTheme,
+                        'navbar-brand-white': graderSettings.isDarkTheme
+                        }"
+                       (click)="goHome()">
+                        <span class="glyphicon glyphicon-home"></span>
+                    </a>
+                    <!--<a class="navbar-brand student-name" (click)="viewStatistics()"><span-->
+                    <!--class="glyphicon glyphicon-align-left"></span></a>-->
+                    <h1 class="directory-name-main text-green"
+                        *ngIf="graderData.done">
+                        <span class="glyphicon glyphicon-ok" style="font-size: 15px"></span>
+                        {{directoryName}}
+                    </h1>
+                    <h1 class="directory-name-main"
+                        *ngIf="!graderData.done">
+                        {{directoryName}}</h1>
+                </div>
+
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <span *ngIf="IDEProjectPath">
+                                <div class="ide-project-text" id="ide-project-path">
+                                    <!--THIS NEEDS TO BE HIDDEN SOMEWHERE SO THE COPY TO CLIPBOARD BUTTON HAS ACCESS TO IT-->
+                                    {{IDEProjectPath}}
+                                </div>
+                                <!--<div style="float: right">-->
+                                <button mat-raised-button
+                                        class="clipboard-btn btn btn-info navbar-button ide-button"
+                                        data-clipboard-target="#ide-project-path"
+                                        matTooltip="Copy Project Location"
+                                        matTooltipPosition="below">
+                                                <span class="glyphicon glyphicon-copy"></span>
+                                            </button>
+                                <button *ngIf="IDEScript" mat-raised-button
+                                        class="clipboard-btn btn btn-info navbar-button ide-button"
+                                        matTooltip="Open in IDE"
+                                        matTooltipPosition="below"
+                                        (click)="openIDEProject()">
+                                                <span class="glyphicon glyphicon-folder-open"></span>
+                                </button>
+                                <!--</div>-->
+                            </span>
+                            <button mat-raised-button class="btn btn-success navbar-button"
+                                    *ngIf="!IDEProjectPath"
+                                    (click)="generateIDEProject()" style="float: right">Debug in IDE
+                            </button>
+                        </li>
+                        <li>
+                            <button mat-raised-button class="btn btn-success navbar-button"
+                                    *ngIf="!graderData.done"
+                                    (click)="setDoneStatus(true)">Mark as Done
+                            </button>
+                            <button mat-raised-button class="btn btn-danger navbar-button"
+                                    *ngIf="graderData.done"
+                                    (click)="setDoneStatus(false)">Mark as not Done
+                            </button>
+                        </li>
+                        <li>
+                            <button mat-raised-button class="btn btn-info navbar-button"
+                                    *ngIf="!isFirstSubmission"
+                                    (click)="goToPreviousSubmission()">Previous
+                            </button>
+                            <button mat-raised-button class="btn btn-info navbar-button"
+                                    *ngIf="isFirstSubmission"
+                                    (click)="goHome()">Home
+                            </button>
+                        </li>
+                        <li>
+                            <button mat-raised-button class="btn btn-info navbar-button"
+                                    *ngIf="!isLastSubmission"
+                                    (click)="goToNextSubmission()">Next
+                            </button>
+                            <button mat-raised-button class="btn btn-info navbar-button"
+                                    *ngIf="isLastSubmission"
+                                    (click)="goHome()">Home
+                            </button>
+                        </li>
+                        <li>
+                            <button mat-raised-button class="btn btn-info navbar-button"
+                                    (click)="goToNextUngradedSubmission()">Next Ungraded
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <div class="col-xs-6 split-panel">
+            <div class="inner-split-panel file-view-panel">
+                <nav class="navbar navbar-default navbar-files" [ngClass]="{'dark-navbar': graderSettings.isDarkTheme}">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                                data-target="#bs-example-navbar-collapse-2" aria-expanded="false">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                    </div>
+
+                    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-2">
+                        <ul class="nav navbar-nav" *ngFor="let file of submittedFiles">
+                            <li class="nav-bar-fade-on-hover tab-item"
+                                [ngClass]="{'active-file-tab': file.name === activeFile && !graderSettings.isDarkTheme,
+                                            'active-file-tab-dark': file.name === activeFile && graderSettings.isDarkTheme}"
+                                (click)="viewFile(file.name)">
+                                <a class="file-tab submitted-file-tab">{{file.name}}</a>
+                            </li>
+                        </ul>
+                        <ul class="nav navbar-nav" *ngIf="testOutput !== null">
+                            <li class="nav-bar-fade-on-hover tab-item"
+                                [ngClass]="{'active-file-tab': 'testOutput' === activeFile && !graderSettings.isDarkTheme,
+                                            'active-file-tab-dark': 'testOutput' === activeFile && graderSettings.isDarkTheme}"
+                                (click)="viewFile('testOutput')">
+                                <a class=" file-tab output-tab">Test Output</a>
+                            </li>
+                        </ul>
+                        <ul class="nav navbar-nav" *ngIf="printedOutput !== null">
+                            <li class="nav-bar-fade-on-hover tab-item"
+                                [ngClass]="{'active-file-tab': 'printedOutput' === activeFile && !graderSettings.isDarkTheme,
+                                            'active-file-tab-dark': 'printedOutput' === activeFile && graderSettings.isDarkTheme}"
+                                (click)="viewFile('printedOutput')">
+                                <a class=" file-tab output-tab">Printed Output</a>
+                            </li>
+                        </ul>
+                        <ul class="nav navbar-nav"
+                            *ngIf="failureStacktraces !== null">
+                            <li class="nav-bar-fade-on-hover tab-item"
+                                [ngClass]="{'active-file-tab': 'failureStacktraces' === activeFile && !graderSettings.isDarkTheme,
+                                            'active-file-tab-dark': 'failureStacktraces' === activeFile && graderSettings.isDarkTheme}"
+                                (click)="viewFile('failureStacktraces')">
+                                <a class=" file-tab output-tab">Failure Stacktraces</a>
+                            </li>
+                        </ul>
+                        <ul class="nav navbar-nav" *ngIf="errorOutput !== null">
+                            <li class="nav-bar-fade-on-hover tab-item"
+                                [ngClass]="{'active-file-tab': 'errorOutput' === activeFile && !graderSettings.isDarkTheme,
+                                            'active-file-tab-dark': 'errorOutput' === activeFile && graderSettings.isDarkTheme}"
+                                (click)="viewFile('errorOutput')">
+                                <a class=" file-tab output-tab">Error Output</a>
+                            </li>
+                        </ul>
+                        <ul class="nav navbar-nav" *ngIf="compiledLanguage">
+                            <li class="nav-bar-fade-on-hover tab-item"
+                                [ngClass]="{'active-file-tab': 'compilerOutput' === activeFile && !graderSettings.isDarkTheme,
+                                            'active-file-tab-dark': 'compilerOutput' === activeFile && graderSettings.isDarkTheme}"
+                                (click)="viewFile('compilerOutput')">
+                                <a class=" file-tab output-tab">Compiler Output</a>
+                            </li>
+                        </ul>
+                        <ul class="nav navbar-nav" *ngIf="checkstyleOutput !== null">
+                            <li class="nav-bar-fade-on-hover tab-item"
+                                [ngClass]="{'active-file-tab': 'checkstyleOutput' === activeFile && !graderSettings.isDarkTheme,
+                                            'active-file-tab-dark': 'checkstyleOutput' === activeFile && graderSettings.isDarkTheme}"
+                                (click)="viewFile('checkstyleOutput')">
+                                <a class="file-tab output-tab">Checkstyle Audit</a>
+                            </li>
+                        </ul>
+                        <ul class="nav navbar-nav" *ngIf="graderConfig.gradingStyle === 'tests'">
+                            <li class="nav-bar-fade-on-hover tab-item"
+                                [ngClass]="{'active-file-tab': testsFile.name === activeFile && !graderSettings.isDarkTheme,
+                                            'active-file-tab-dark': testsFile.name === activeFile && graderSettings.isDarkTheme}"
+                                (click)="viewFile(testsFile.name)">
+                                <a class="file-tab support-file-tab">{{testsFile.name}}</a>
+                            </li>
+                        </ul>
+                        <ul class="nav navbar-nav" *ngFor="let file of supportFiles">
+                            <li class="nav-bar-fade-on-hover tab-item"
+                                [ngClass]="{'active-file-tab': file.name === activeFile && !graderSettings.isDarkTheme,
+                                            'active-file-tab-dark': file.name === activeFile && graderSettings.isDarkTheme}"
+                                (click)="viewFile(file.name)">
+                                <a class=" file-tab support-file-tab">{{file.name}}</a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+                <div class="search-div">
+                    <form>
+                        <input name="searchText" class="search-text form-control"
+                               [ngClass]="{'dark-form-control': graderSettings.isDarkTheme}"
+                               [(ngModel)]="searchText"
+                               placeholder="Search">
+                        <button class="btn btn-default search-button"
+                                [ngClass]="{'dark-button': graderSettings.isDarkTheme}"
+                                (click)="searchForText()"><span
+                            class="glyphicon glyphicon-search"></span>
+                        </button>
+                        <button class="btn btn-default search-button"
+                                [ngClass]="{'dark-button': graderSettings.isDarkTheme}"
+                                (click)="goToPreviousMatch()"
+                                *ngIf="searchMarkInstance && searchMarks && searchMarks.length > 1">
+                            <span class="glyphicon glyphicon-chevron-up"></span>
+                        </button>
+                        <button class="btn btn-default search-button"
+                                [ngClass]="{'dark-button': graderSettings.isDarkTheme}"
+                                (click)="goToNextMatch()"
+                                *ngIf="searchMarkInstance && searchMarks && searchMarks.length > 1">
+                            <span class="glyphicon glyphicon-chevron-down"></span>
+                        </button>
+                        <button class="btn btn-danger search-button" (click)="clearSearchForText()"
+                                *ngIf="searchMarkInstance && searchMarks && searchMarks.length > 0">
+                            <span class="glyphicon glyphicon-remove"></span>
+                        </button>
+                        <mat-checkbox name="searchForRegex" [(ngModel)]="searchForRegex"
+                                      class="regex-toggle">Use Regex
+                        </mat-checkbox>
+                        <span>{{matchesText}}</span>
+                    </form>
+                </div>
+                <pre *ngFor="let file of supportFiles" [hidden]="file.name !== activeFile"
+                     class="outer-file-preview line-numbers"
+                     [ngClass]="{'searchable': file.name === activeFile,
+                                'dark-background': graderSettings.isDarkTheme,
+                                'light-background': !graderSettings.isDarkTheme}"><code class="file-preview"
+                                                                                        ngClass="{{file.highlightClass}}">{{file.contents}}</code></pre>
+
+                <pre [hidden]="testsFile.name !== activeFile" id="test-file-preview"
+                     *ngIf="graderConfig.gradingStyle === 'tests'"
+                     class="outer-file-preview line-numbers"
+                     [ngClass]="{'searchable': testsFile.name === activeFile,
+                                'dark-background': graderSettings.isDarkTheme,
+                                'light-background': !graderSettings.isDarkTheme}"><code class="file-preview"
+                                                                                        ngClass="{{testsFile.highlightClass}}">{{testsFile.contents}}</code></pre>
+
+                <pre *ngFor="let file of submittedFiles" [hidden]="file.name !== activeFile"
+                     class="outer-file-preview line-numbers"
+                     [ngClass]="{'searchable': file.name === activeFile,
+                                'dark-background': graderSettings.isDarkTheme,
+                                'light-background': !graderSettings.isDarkTheme}"><code
+                    ngClass="{{file.highlightClass}}"
+                    class="file-preview submitted-file-contents">{{file.contents}}</code></pre>
+
+                <pre [ngClass]="{'searchable': 'testOutput' === activeFile,
+                                'dark-background': graderSettings.isDarkTheme,
+                                'light-background': !graderSettings.isDarkTheme}"
+                     [hidden]="'testOutput' !== activeFile" class="outer-file-preview"><code
+                    class="file-preview language-">{{testOutput || 'No test output'}}</code></pre>
+
+                <pre [ngClass]="{'searchable': 'compilerOutput' === activeFile,
+                                'dark-background': graderSettings.isDarkTheme,
+                                'light-background': !graderSettings.isDarkTheme}"
+                     [hidden]="'compilerOutput' !== activeFile" class="outer-file-preview"><code
+                    class="file-preview language-">{{compilerOutput || 'No compiler output'}}</code></pre>
+
+                <pre [ngClass]="{'searchable': 'printedOutput' === activeFile,
+                                'dark-background': graderSettings.isDarkTheme,
+                                'light-background': !graderSettings.isDarkTheme}"
+                     [hidden]="'printedOutput' !== activeFile" class="outer-file-preview"><code
+                    class="file-preview language-">{{printedOutput && printedOutput.length > 0 ? printedOutput: 'No printed output'}}</code></pre>
+
+                <pre [ngClass]="{'searchable': 'failureStacktraces' === activeFile,
+                                'dark-background': graderSettings.isDarkTheme,
+                                'light-background': !graderSettings.isDarkTheme}"
+                     [hidden]="'failureStacktraces' !== activeFile" class="outer-file-preview"><code
+                    class="file-preview language-">{{failureStacktraces && failureStacktraces.length > 0 ? failureStacktraces: 'No failure stacktraces'}}</code></pre>
+
+                <pre [ngClass]="{'searchable': 'errorOutput' === activeFile,
+                                'dark-background': graderSettings.isDarkTheme,
+                                'light-background': !graderSettings.isDarkTheme}"
+                     [hidden]="'errorOutput' !== activeFile" class="outer-file-preview"><code
+                    class="file-preview language-">{{errorOutput && errorOutput.length > 0 ? errorOutput: 'No error output'}}</code></pre>
+
+                <pre [ngClass]="{'searchable': 'checkstyleOutput' === activeFile,
+                                'dark-background': graderSettings.isDarkTheme,
+                                'light-background': !graderSettings.isDarkTheme}"
+                     [hidden]="'checkstyleOutput' !== activeFile" class="outer-file-preview"><code
+                    class="file-preview language-">{{checkstyleOutput || 'No checkstyle output'}}</code></pre>
+            </div>
+        </div>
+        <div class="col-xs-6 split-panel">
+            <div class="inner-split-panel grading-panel">
+                <mat-tab-group class="grading-tab-group">
+                    <mat-tab label="Main Rubric Items">
+                        <div class="grading-tab">
+                            <div>
+                                <div *ngIf="graderConfig.gradingStyle === 'tests'" class="text-red">
+                                    <h4 *ngIf="errorOutput" class="rubric-items-header">Note: did not run tests due to
+                                        error</h4>
+                                    <h4 *ngIf="graderData.missingSubmissionFiles" class="rubric-items-header">Note: did
+                                        not run tests due to one or more missing submission files</h4>
+                                    <h4 *ngIf="compiledLanguage && !graderData.missingSubmissionFiles && !successfulCompile"
+                                        class="rubric-items-header">Note: did
+                                        not run tests due to failure to compile</h4>
+
+                                </div>
+                                <div *ngIf="graderData.appliedRubricItems.length > 0">
+                                    <div style="display: inline-block; padding-left: 10px">
+                                        <h3 class="rubric-items-header">Applied Items</h3>
+                                        <div>
+                                            <mat-chip class="item-header-chip" disableRipple>
+                                            <span class="small-padding-right" [ngClass]="{
+                                                'text-red': totalAppliedRubricItemPoints < 0,
+                                                'text-green': totalAppliedRubricItemPoints > 0
+                                                }">
+                                            {{totalAppliedRubricItemPoints}}
+                                            </span> Applied Points
+                                            </mat-chip>
+                                        </div>
+                                    </div>
+                                    <div *ngFor="let item of graderData.appliedRubricItems; let i = index">
+                                        <mat-card class="item-card">
+                                            <mat-card-content>
+                                                <span class="text-teal">
+                                                    <strong>{{item.points}} points</strong> - {{item.comment}}
+                                                </span>
+                                                <div class="resolved-issue-control" *ngIf="!graderData.done">
+                                                    <button mat-raised-button
+                                                            class="btn btn-default resolved-issue-btn"
+                                                            *ngIf="i < graderData.appliedRubricItems.length - 1"
+                                                            (click)="moveAppliedDown(i)">
+                                                        <span class="glyphicon glyphicon-chevron-down"></span>
+                                                    </button>
+                                                    <button mat-raised-button
+                                                            class="btn btn-default resolved-issue-btn"
+                                                            *ngIf="i > 0"
+                                                            (click)="moveAppliedUp(i)">
+                                                        <span class="glyphicon glyphicon-chevron-up"></span>
+                                                    </button>
+                                                    <button mat-raised-button
+                                                            class="btn btn-danger resolved-issue-btn"
+                                                            (click)="unapply(i)">
+                                                        <span class="glyphicon glyphicon-remove"></span>
+                                                    </button>
+                                                </div>
+                                                <div *ngFor="let subItem of item.items">
+                                                    <span>
+                                                        <span class="item-name">{{subItem.name}}</span>
+                                                        <span class="small-padding-left">{{subItem.points}} {{subItem.points === 1 ? 'Point' : 'Points'}}</span>
+                                                    </span>
+                                                </div>
+                                            </mat-card-content>
+                                        </mat-card>
+                                    </div>
+                                </div>
+                                <div *ngIf="graderData.unresolvedRubricItems.length > 0">
+                                    <div>
+                                        <div>
+                                            <div style="display: inline-block">
+                                                <h3 class="rubric-items-header">Unresolved Items</h3>
+                                                <mat-chip class="item-header-chip" disableRipple
+                                                          *ngIf="graderConfig.gradingStyle === 'tests'
+                                                    && !graderData.missingSubmissionFiles
+                                                    && (graderData.compile ?  graderData.compile.success : true)">
+                                                    <!--Only show if there are no missing submission files and it compiles if necessary-->
+                                                    <span class="small-padding-right" [ngClass]="{
+                                                            'text-red': graderData.testPointsLost !== 0
+                                                            }">
+                                                            {{Math.abs(graderData.testPointsLost)}}
+                                                        </span>
+                                                    Test Points Lost
+                                                </mat-chip>
+                                                <mat-chip class="item-header-chip" disableRipple
+                                                          *ngIf="graderConfig.gradingStyle === 'tests'
+                                                    && !graderData.missingSubmissionFiles
+                                                    && (graderData.compile ?  graderData.compile.success : true)">
+                                                    {{fileInterface.getTestData().totalCurrentPoints}}
+                                                    Max Test Points
+                                                </mat-chip>
+                                            </div>
+                                            <div class="show-unresolved-test-metadata-toggle">
+                                                <mat-slide-toggle [(ngModel)]="showUnresolvedTestMetadata">
+                                                    Show notes
+                                                </mat-slide-toggle>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div *ngFor="let item of graderData.unresolvedRubricItems; let i = index">
+                                        <mat-card class="item-card">
+                                            <mat-card-content>
+                                                <div class="item-header">
+                                                    <mat-checkbox class="small-padding-right" *ngIf="!graderData.done"
+                                                                  (change)="toggleSelectUnresolvedRubricItemforApplying($event, i)">
+                                                        <span [ngClass]="{'text-red': item.isTest}" class="item-name">{{item.name}}</span>
+                                                    </mat-checkbox>
+                                                    <span *ngIf="graderData.done" [ngClass]="{'text-red': item.isTest}"
+                                                          class="item-name">{{item.name}}</span>
+                                                    <span *ngIf="item.isTest"
+                                                          class="cursor-pointer glyphicon glyphicon glyphicon-search small-padding-left small-padding-right"
+                                                          (click)="searchText = item.name;viewFile(testsFile.name);searchForText()"></span>
+                                                    <span *ngIf="item.isTest && item.expectedException">
+                                                            - <span *ngIf="contains(toApplyIndices, i)"
+                                                                    class="glyphicon glyphicon-pencil populate-exception-message small-padding-right"
+                                                                    (click)="populateErrorComment(item.expectedException)">
+                                                    </span>Expected {{item.expectedException}}</span>
+                                                    <span [ngClass]="{'text-red': item.isTest}"
+                                                          class="small-padding-left"> {{item.points}} Points
+                                                    </span>
+                                                    <button class="skip-item-button" mat-raised-button
+                                                            *ngIf="!item.isTest && toApplyIndices.length === 0"
+                                                            (click)="skipUnresolvedRubricItem(i)">
+                                                        Ignore
+                                                    </button>
+                                                </div>
+                                                <div *ngIf="showUnresolvedTestMetadata">
+                                                    <div *ngIf="item.notes" class="large-padding-left">
+                                                        <span class="item-notes-data" [innerHTML]="item.notes"></span>
+                                                    </div>
+                                                    <div class="large-padding-left"
+                                                         *ngIf="item.author || item.contactLink">
+                                                        <span>Author: </span>
+                                                        <span class="item-author-data" *ngIf="item.author">
+                                                            <span *ngIf="!item.contactLink">{{item.author}}</span>
+                                                            <span *ngIf="item.contactLink">
+                                                            <a class="contact-link"
+                                                               (click)="openContactLink(item.contactLink)">
+                                                                {{item.author}}
+                                                            </a>
+                                                        </span>
+                                                        </span>
+                                                        <span class="item-author-data"
+                                                              *ngIf="!item.author && item.contactLink">
+                                                            <a class="contact-link"
+                                                               (click)="openContactLink(item.contactLink)">
+                                                                {{item.contactLink}}
+                                                            </a>
+                                                        </span>
+                                                    </div>
+                                                    <div *ngIf="item.regexMatches">
+                                                        <div class="regex-matches-header">Regex matches</div>
+                                                        <div *ngFor="let file of (item.regexMatches | keys)">
+                                                            <div *ngIf="item.regexMatches[file]">
+                                                                <span class="small-padding-left">{{file}}</span>
+                                                                <div *ngFor="let match of item.regexMatches[file]">
+                                                                    <span>
+                                                                        <span class="large-padding-left">
+                                                                            <span
+                                                                                class="cursor-pointer glyphicon glyphicon glyphicon-search"
+                                                                                (click)="goToLine(match.lineNumber, file)">
+                                                                            </span>
+                                                                            <span class="small-padding-left">{{match.lineNumber}}:
+                                                                                <span
+                                                                                    [ngClass]="{
+                                                                                    'text-yellow': match.type === 'neutral',
+                                                                                    'text-green': match.type === 'good',
+                                                                                    'text-red': match.type === 'bad'}"
+                                                                                    class="text-red">{{match.line}}</span>
+                                                                            </span>
+                                                                        </span>
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </mat-card-content>
+                                        </mat-card>
+                                    </div>
+                                    <div class="apply-container" *ngIf="toApplyIndices.length > 0 && !graderData.done">
+                                        <form (ngSubmit)="applyRubricItems()" [formGroup]="rubricItemGroup">
+                                            <div style="width:100%; display:table">
+                                                <textarea class="form-control" placeholder="Comments" id="apply-comment"
+                                                          [matAutocomplete]="rubricItemAuto" matInput
+                                                          [formControl]="rubricItemGroup.controls['comment']">
+                                                </textarea>
+                                                <mat-autocomplete #rubricItemAuto="matAutocomplete">
+                                                    <mat-option
+                                                        *ngFor="let option of filteredRubricCommentOptions | async"
+                                                        [value]="option">
+                                                        {{ option }}
+                                                    </mat-option>
+                                                </mat-autocomplete>
+                                                <button mat-raised-button class="btn btn-success" id="apply-button">
+                                                    Apply {{toApplyIndices.length}} {{toApplyIndices.length === 1?
+                                                    'item': 'items'}}
+                                                </button>
+                                                <small>
+                                                    Note: names and notes corresponding to rubric items aren't shown to
+                                                    students, so make sure your comments are descriptive
+                                                </small>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                                <div *ngIf="graderData.skippedRubricItems.length > 0">
+                                    <div style="display: inline-block; width: 100%">
+                                        <h3 class="rubric-items-header">Ignored Items</h3>
+                                        <div *ngFor="let item of graderData.skippedRubricItems; let i = index">
+                                            <mat-card class="item-card">
+                                                <mat-card-content>
+                                                    <div>
+                                                         <span *ngIf="item.isTest"
+                                                               class="cursor-pointer glyphicon glyphicon glyphicon-search small-padding-right"
+                                                               (click)="searchText = item.name;viewFile(testsFile.name);searchForText()"></span>
+                                                        <span class="item-name"
+                                                              [ngClass]="{'text-green': item.isTest}">{{item.name}}</span>
+                                                        <span class="small-padding-left small-padding-right"
+                                                              *ngIf="!item.isTest">{{item.points}} Points</span>
+                                                        <span class="small-padding-left text-green" *ngIf="item.isTest">(passed) {{-1 * item.points}} Points</span>
+                                                        <button class="skip-item-button" mat-raised-button
+                                                                *ngIf="!item.isTest && !graderData.done"
+                                                                (click)="unresolveIgnoredRubricItem(i)">
+                                                            Restore
+                                                        </button>
+                                                    </div>
+                                                </mat-card-content>
+                                            </mat-card>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </mat-tab>
+                    <mat-tab label="Other Rubric Items">
+                        <div class="grading-tab">
+                            <div style="display: inline-block">
+                                <h3 class="rubric-items-header">Additional Rubric Items</h3>
+                                <mat-chip class="item-header-chip" disableRipple>
+                                    <span class="small-padding-right" [ngClass]="{
+                                        'text-red': totalOptionalRubricItemPoints < 0,
+                                        'text-green': totalOptionalRubricItemPoints > 0
+                                        }">
+                                            {{totalOptionalRubricItemPoints}}
+                                    </span> Total Points
+                                </mat-chip>
+                            </div>
+                            <br>
+                            <small>
+                                Note: names of, but not notes associated with additional rubric items are shown to
+                                students
+                            </small>
+                            <br>
+                            <br>
+                            <div *ngFor="let item of graderData.optionalRubricItems; let i = index">
+                                <mat-expansion-panel class="optional-item-panel" [expanded]="item.panelExpanded"
+                                                     (opened)="onOptionalItemPanelExpansionStateChanged(item, true)"
+                                                     (closed)="onOptionalItemPanelExpansionStateChanged(item, false)">
+                                    <mat-expansion-panel-header class="optional-item-expansion-header">
+                                        <span class="optional-item-header">
+                                            <span class="optional-item-name">{{item.name}}</span>
+                                            <span class="optional-item-regex-matches-summary">
+                                                <!--<mat-chip-list style="margin-right: 0 !important;">-->
+                                                    <mat-chip class="text-red optional-item-regex-matches-number"
+                                                              disableRipple
+                                                              [matTooltip]="optionalRubricItemRegexPreviewData[i]['bad'] + ' bad regex match' + (optionalRubricItemRegexPreviewData[i]['bad'] !== 1 ? 'es' : '')"
+                                                              *ngIf="optionalRubricItemRegexPreviewData[i]['bad']">
+                                                        {{optionalRubricItemRegexPreviewData[i]['bad']}}
+                                                    </mat-chip>
+                                                    <mat-chip class="text-yellow optional-item-regex-matches-number"
+                                                              disableRipple
+                                                              [matTooltip]="optionalRubricItemRegexPreviewData[i]['neutral'] + ' neutral regex match' + (optionalRubricItemRegexPreviewData[i]['neutral'] !== 1 ? 'es' : '')"
+                                                              *ngIf="optionalRubricItemRegexPreviewData[i]['neutral']">
+                                                        {{optionalRubricItemRegexPreviewData[i]['neutral']}}
+                                                    </mat-chip>
+                                                    <mat-chip class="text-green optional-item-regex-matches-number"
+                                                              disableRipple
+                                                              [matTooltip]="optionalRubricItemRegexPreviewData[i]['good'] + ' good regex match' + (optionalRubricItemRegexPreviewData[i]['good'] !== 1 ? 'es' : '')"
+                                                              *ngIf="optionalRubricItemRegexPreviewData[i]['good']">
+                                                        {{optionalRubricItemRegexPreviewData[i]['good']}}
+                                                    </mat-chip>
+                                                <!--</mat-chip-list>-->
+                                            </span>
+                                            <span class="optional-item-points" *ngIf="!item.panelExpanded">
+                                                <span *ngIf="item.numApplications === 0"
+                                                      class="optional-item-points-small">Not applied</span>
+                                                <span *ngIf="item.numApplications !== 0"
+                                                      class="optional-item-points-large"
+                                                      [ngClass]="{
+                                                'text-red': (item.numApplications * item.points) < 0,
+                                                'text-green': (item.numApplications * item.points) > 0
+                                                }">
+                                                    {{item.numApplications * item.points}} points
+                                                </span>
+                                            </span>
+                                        </span>
+                                    </mat-expansion-panel-header>
+                                    <mat-card class="optional-item-section-card"
+                                              *ngIf="item.notes || item.author || item.contactLink">
+                                        <mat-card-content>
+                                            <div *ngIf="item.notes">
+                                                <span class="item-notes-data" [innerHTML]="item.notes"></span>
+                                            </div>
+                                            <div *ngIf="item.author || item.contactLink">
+                                                <span>Author: </span>
+                                                <span class="item-author-data" *ngIf="item.author">
+                                                    <span *ngIf="!item.contactLink">{{item.author}}</span>
+                                                    <span *ngIf="item.contactLink">
+                                                        <a class="contact-link"
+                                                           (click)="openContactLink(item.contactLink)">
+                                                            {{item.author}}
+                                                        </a>
+                                                    </span>
+                                                </span>
+                                                <span class="item-author-data"
+                                                      *ngIf="!item.author && item.contactLink">
+                                                    <a class="contact-link"
+                                                       (click)="openContactLink(item.contactLink)">
+                                                        {{item.contactLink}}
+                                                    </a>
+                                                </span>
+                                            </div>
+                                        </mat-card-content>
+                                    </mat-card>
+                                    <mat-card class="optional-item-section-card">
+                                        <mat-card-content>
+                                            <div *ngIf="item.maxApplications !== 1">
+                                                <mat-form-field>
+                                                    <input
+                                                        matInput
+                                                        [(ngModel)]="item.numApplications"
+                                                        disabled="{{graderData.done}}"
+                                                        min="0"
+                                                        max="{{item.maxApplications}}"
+                                                        title="numApplications"
+                                                        type="number"
+                                                        (change)="setOptionalRubricItemCount($event, i)"
+                                                    />
+                                                </mat-form-field>
+                                                <span class="large-padding-left large-padding-right">x</span>
+                                                <span>{{item.points}} =
+                                                <span [ngClass]="{
+                                                'text-red': (item.numApplications * item.points) < 0,
+                                                'text-green': (item.numApplications * item.points) > 0
+                                                }">
+                                                    {{item.numApplications * item.points}} points
+                                                </span>
+                                            </span>
+                                            </div>
+                                            <div *ngIf="item.maxApplications === 1">
+                                                <mat-slide-toggle disabled="{{graderData.done}}"
+                                                                  [checked]="item.numApplications > 0"
+                                                                  (change)="toggleOptionalRubricItem($event, i)"
+                                                >
+                                                    Apply for
+                                                    <span [ngClass]="{
+                                                'text-red': (item.numApplications * item.points) < 0,
+                                                'text-green': (item.numApplications * item.points) > 0
+                                                }">
+                                                    {{item.points}} points
+                                                </span>
+                                                </mat-slide-toggle>
+                                            </div>
+                                        </mat-card-content>
+                                    </mat-card>
+                                    <mat-card class="optional-item-section-card"
+                                              *ngIf="item.comments.length > 0 || !graderData.done">
+                                        <mat-card-content>
+                                            <div *ngFor="let comment of item.comments; let i = index"
+                                                 [attr.data-index]="i">
+                                                <mat-card class="additional-issue-card">
+                                                    <mat-card-content>
+                                                        <span>{{comment}}</span>
+                                                        <div class="comment-movement-control" *ngIf="!graderData.done">
+                                                            <button mat-raised-button
+                                                                    class="btn btn-default efficiency-issue-btn"
+                                                                    *ngIf="i < item.comments.length - 1"
+                                                                    (click)="moveOptionalItemCommentDown(item, i)">
+                                                                <span class="glyphicon glyphicon-chevron-down"></span>
+                                                            </button>
+                                                            <button mat-raised-button
+                                                                    class="btn btn-default efficiency-issue-btn"
+                                                                    *ngIf="i > 0"
+                                                                    (click)="moveOptionalItemCommentUp(item, i)">
+                                                                <span class="glyphicon glyphicon-chevron-up"></span>
+                                                            </button>
+                                                            <button mat-raised-button
+                                                                    class="btn btn-danger efficiency-issue-btn"
+                                                                    (click)="removeOptionalItemComment(item, i)">
+                                                                <span class="glyphicon glyphicon-remove"></span>
+                                                            </button>
+                                                        </div>
+                                                    </mat-card-content>
+                                                </mat-card>
+                                            </div>
+                                            <app-optional-item-comment-box [hidden]="graderData.done"
+                                                                           (update)="addOptionalItemComment($event, item)">
+                                            </app-optional-item-comment-box>
+                                        </mat-card-content>
+                                    </mat-card>
+                                    <mat-card class="optional-item-section-card" *ngIf="item.regexMatches">
+                                        <mat-card-content>
+                                            <div class="regex-matches-header">Regex matches</div>
+                                            <div *ngFor="let file of (item.regexMatches | keys)">
+                                                <div *ngIf="item.regexMatches[file]">
+                                                    <span class="small-padding-left">{{file}}</span>
+                                                    <div *ngFor="let match of item.regexMatches[file]">
+                                                    <span>
+                                                        <span class="large-padding-left">
+                                                            <span
+                                                                class="cursor-pointer glyphicon glyphicon glyphicon-search"
+                                                                (click)="goToLine(match.lineNumber, file)">
+                                                            </span>
+                                                            <span class="small-padding-left">{{match.lineNumber}}:
+                                                                <span
+                                                                    [ngClass]="{
+                                                                    'text-yellow': match.type === 'neutral',
+                                                                    'text-green': match.type === 'good',
+                                                                    'text-red': match.type === 'bad'}"
+                                                                    class="text-red">{{match.line}}</span>
+                                                            </span>
+                                                        </span>
+                                                    </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </mat-card-content>
+                                    </mat-card>
+                                </mat-expansion-panel>
+                            </div>
+                        </div>
+                    </mat-tab>
+                    <mat-tab label="Additional">
+                        <div class="grading-tab">
+                            <div
+                                *ngIf="graderData.done
+                                    && graderData.comments.length === 0
+                                    && graderData.pointAdjustmentItems.length === 0">
+                                <mat-card class="summary-card">
+                                    <mat-card-content>
+                                        <h3>No Additional Adjustments Applied</h3>
+                                    </mat-card-content>
+                                </mat-card>
+                            </div>
+                            <div *ngIf="!graderData.done || graderData.comments.length > 0">
+                                <mat-card class="summary-card">
+                                    <mat-card-content>
+                                        <h3>Additional Comments</h3>
+                                        <div *ngFor="let comment of graderData.comments; let i = index"
+                                             [attr.data-index]="i">
+                                            <mat-card class="additional-issue-card">
+                                                <mat-card-content>
+                                                    <span>{{comment}}</span>
+                                                    <div class="comment-movement-control" *ngIf="!graderData.done">
+                                                        <button mat-raised-button
+                                                                class="btn btn-default efficiency-issue-btn"
+                                                                *ngIf="i < graderData.comments.length - 1"
+                                                                (click)="moveAdditionalCommentDown(i)">
+                                                            <span class="glyphicon glyphicon-chevron-down"></span>
+                                                        </button>
+                                                        <button mat-raised-button
+                                                                class="btn btn-default efficiency-issue-btn"
+                                                                *ngIf="i > 0"
+                                                                (click)="moveAdditionalCommentUp(i)">
+                                                            <span class="glyphicon glyphicon-chevron-up"></span>
+                                                        </button>
+                                                        <button mat-raised-button
+                                                                class="btn btn-danger efficiency-issue-btn"
+                                                                (click)="removeAdditionalComment(i)">
+                                                            <span class="glyphicon glyphicon-remove"></span>
+                                                        </button>
+                                                    </div>
+                                                </mat-card-content>
+                                            </mat-card>
+                                        </div>
+                                        <form [formGroup]="additionalCommentGroup"
+                                              (ngSubmit)="addAdditionalComment()" *ngIf="!graderData.done">
+                                            <div style="width:100%; display:table">
+                                    <textarea class="additional-comment"
+                                              placeholder="Additional Comment"
+                                              [matAutocomplete]="additionalCommentAuto" matInput
+                                              [formControl]="additionalCommentGroup.controls['comment']">
+                                    </textarea>
+                                                <mat-autocomplete #additionalCommentAuto="matAutocomplete">
+                                                    <mat-option
+                                                        *ngFor="let option of filteredAdditionalCommentOptions | async"
+                                                        [value]="option">
+                                                        {{ option }}
+                                                    </mat-option>
+                                                </mat-autocomplete>
+                                                <label class="additional-comment-add-button">
+                                                    <button mat-raised-button class="btn btn-success" type="submit">
+                                                        Add Comment
+                                                    </button>
+                                                </label>
+                                            </div>
+                                        </form>
+                                    </mat-card-content>
+                                </mat-card>
+                            </div>
+                            <div *ngIf="!graderData.done || graderData.pointAdjustmentItems.length > 0">
+                                <mat-card class="summary-card">
+                                    <mat-card-content>
+                                        <div style="display: inline-block">
+                                            <h3 class="rubric-items-header">Point Adjustment</h3>
+                                            <mat-chip class="item-header-chip" disableRipple
+                                                      *ngIf="graderData.pointAdjustmentItems.length !== 0">
+                                                Adjusted Points By
+                                                <span class="small-padding-left" [ngClass]="{
+                                        'text-red': totalPointAdjustmentPoints < 0,
+                                        'text-green': totalPointAdjustmentPoints > 0
+                                        }">
+                                            {{totalPointAdjustmentPoints}}
+                                    </span>
+                                            </mat-chip>
+                                        </div>
+                                        <div *ngFor="let item of graderData.pointAdjustmentItems; let i = index"
+                                             [attr.data-index]="i">
+                                            <mat-card class="additional-issue-card">
+                                                <mat-card-content>
+                                            <span class="point-adjustment-points-text">
+                                                <span class="small-padding-right"
+                                                      [ngClass]="{
+                                                'text-red': item.points < 0,
+                                                'text-green': item.points > 0
+                                                }">
+                                                    {{item.points}}
+                                                </span> Points
+                                            </span>
+                                                    <span class="small-padding-left small-padding-right"> - </span>
+                                                    <span>{{item.comment}}</span>
+                                                    <div class="comment-movement-control" *ngIf="!graderData.done">
+                                                        <button mat-raised-button
+                                                                class="btn btn-default efficiency-issue-btn"
+                                                                *ngIf="i < graderData.comments.length - 1"
+                                                                (click)="movePointAdjustmentItemDown(i)">
+                                                            <span class="glyphicon glyphicon-chevron-down"></span>
+                                                        </button>
+                                                        <button mat-raised-button
+                                                                class="btn btn-default efficiency-issue-btn"
+                                                                *ngIf="i > 0"
+                                                                (click)="movePointAdjustmentItemUp(i)">
+                                                            <span class="glyphicon glyphicon-chevron-up"></span>
+                                                        </button>
+                                                        <button mat-raised-button
+                                                                class="btn btn-danger efficiency-issue-btn"
+                                                                (click)="removePointAdjustmentItem(i)">
+                                                            <span class="glyphicon glyphicon-remove"></span>
+                                                        </button>
+                                                    </div>
+                                                </mat-card-content>
+                                            </mat-card>
+                                        </div>
+                                        <form [formGroup]="pointAdjustmentGroup"
+                                              (ngSubmit)="addPointAdjustmentItem()" *ngIf="!graderData.done">
+                                            <div style="width:100%; display:table">
+                                                <textarea class="point-adjustment-comment"
+                                                          placeholder="Point Adjustment Comment"
+                                                          rows="5"
+                                                          [matAutocomplete]="additionalCommentAuto" matInput
+                                                          [formControl]="pointAdjustmentGroup.controls['comment']">
+                                                </textarea>
+                                                <mat-autocomplete #additionalCommentAuto="matAutocomplete">
+                                                    <mat-option
+                                                        *ngFor="let option of filteredPointAdjustmentOptions | async"
+                                                        [value]="option">
+                                                        {{ option }}
+                                                    </mat-option>
+                                                </mat-autocomplete>
+                                                <label class="additional-comment-add-button">
+                                                    <mat-form-field class="point-adjustment-points-input">
+                                                        <input
+                                                            matInput
+                                                            disabled="{{graderData.done}}"
+                                                            title="numApplications"
+                                                            type="number"
+                                                            placeholder="Points"
+                                                            [formControl]="pointAdjustmentGroup.controls['points']"
+                                                        />
+                                                    </mat-form-field>
+                                                    <button mat-raised-button class="btn btn-success" type="submit">
+                                                        Add Item
+                                                    </button>
+                                                </label>
+                                            </div>
+                                        </form>
+                                    </mat-card-content>
+                                </mat-card>
+                            </div>
+                        </div>
+                    </mat-tab>
+                    <mat-tab label="Summary">
+                        <div class="grading-tab">
+                            <mat-card class="summary-card" *ngIf="!graderData.done">
+                                <mat-card-content>
+                                    <h4 class="grader-summary">
+                                        Mark done to generate summary
+                                    </h4>
+                                </mat-card-content>
+                            </mat-card>
+                            <div *ngIf="graderData.done">
+                                <mat-card class="summary-card">
+                                    <mat-card-content>
+                                        <div style="display: inline-block">
+                                            <h3 class="summary-header">Points</h3>
+                                            <mat-chip class="summary-header-chip" disableRipple>
+                                                Maximum Points: {{graderConfig.maxPoints}}
+                                            </mat-chip>
+                                        </div>
+                                        <br>
+                                        <div>
+                                            <div>
+                                                <h5 class="points-summary-text">Base Points:
+                                                    <b>{{graderConfig.basePoints}}</b>
+                                                </h5>
+                                            </div>
+                                            <div>
+                                                <h5 class="points-summary-text">Main Rubric Items: <b
+                                                    [ngClass]="{
+                                                        'text-red': totalAppliedRubricItemPoints < 0,
+                                                        'text-green': totalAppliedRubricItemPoints > 0
+                                                    }">
+                                                    {{totalAppliedRubricItemPoints}}</b></h5>
+                                            </div>
+                                            <div>
+                                                <h5 class="points-summary-text">Other Rubric Items: <b
+                                                    [ngClass]="{
+                                                        'text-red': totalOptionalRubricItemPoints < 0,
+                                                        'text-green': totalOptionalRubricItemPoints > 0
+                                                    }">
+                                                    {{totalOptionalRubricItemPoints}}</b></h5>
+                                            </div>
+
+                                            <div>
+                                                <h5 class="points-summary-text">Custom Point Adjustment: <b
+                                                    [ngClass]="{
+                                                        'text-red': totalPointAdjustmentPoints < 0,
+                                                        'text-green': totalPointAdjustmentPoints > 0
+                                                    }">
+                                                    {{totalPointAdjustmentPoints}}</b></h5>
+                                            </div>
+                                            <div>
+                                                <h4 class="points-summary-text">Total: <b id="grader-total-points">
+                                                    {{finalScore}}</b></h4>
+                                                <button mat-raised-button class="clipboard-btn btn btn-info"
+                                                        data-clipboard-target="#grader-total-points">
+                                                    <span class="glyphicon glyphicon-copy"></span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </mat-card-content>
+                                </mat-card>
+                                <mat-card class="summary-card">
+                                    <mat-card-content>
+                                        <h3>Comments</h3>
+                                        <div>
+                                            <p class="grader-summary" id="grader-summary">
+                                                {{graderSummary}}</p>
+                                            <button mat-raised-button class="clipboard-btn btn btn-info"
+                                                    data-clipboard-target="#grader-summary">
+                                                <span class="glyphicon glyphicon-copy"></span>
+                                            </button>
+                                        </div>
+                                    </mat-card-content>
+                                </mat-card>
+                            </div>
+                        </div>
+                    </mat-tab>
+                </mat-tab-group>
+            </div>
+        </div>
+    </div>
+</div>
+

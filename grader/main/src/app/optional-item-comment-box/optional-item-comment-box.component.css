@@ -1,0 +1,17 @@
+.optional-item-comment {
+    display: inline-block;
+    margin: 0;
+    width: calc(100% - 105px);
+    resize: vertical;
+}
+
+.optional-item-comment-apply-button {
+    display: inline-block;
+    width: 100px;
+    height: 34px;
+    vertical-align: top;
+    margin-left: 2px;
+    padding-left: 4px;
+    padding-right: 4px;
+    padding-top: 0;
+}

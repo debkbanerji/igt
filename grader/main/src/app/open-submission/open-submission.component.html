@@ -1,0 +1,16 @@
+<div id="outer-container" [ngClass]="{'dark-theme': graderSettings.isDarkTheme}">
+    <div [ngClass]="{'dark-background': graderSettings.isDarkTheme}"
+         id="particles-js-target"></div>
+    <div id="loading-container">
+        <div id="loading-spinner-container">
+            <mat-progress-spinner
+                id="loading-spinner"
+                color="primary"
+                mode="indeterminate">
+            </mat-progress-spinner>
+        </div>
+        <h3>Processing Directory {{directoryName}}</h3>
+        <!--<h3>{{processingStatusText}}</h3>-->
+        <b class="text-red">Warning: closing the grader right now may corrupt the directory</b>
+    </div>
+</div>
