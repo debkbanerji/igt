@@ -42,6 +42,7 @@
         "decompress": "^4.2.0",
         "dictionary-en-us": "^2.0.0",
         "hammerjs": "^2.0.8",
+        "nodeify": "^1.0.1",
         "nspell": "^2.0.1",
         "rxjs": "^6.2.1",
         "zone.js": "^0.8.4"
