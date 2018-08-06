@@ -27,7 +27,7 @@ def timeout(max_time):
             if thread.isAlive():
                 raise TimeoutError("Test timed out after " + str(max_time) + " seconds")
 
-            output = my_queue.get_nowait()
+            output = my_queue.get(True, 1)
             # Reraise if an exception occured
             if isinstance(output, tuple) and type(output[0]) is type and isinstance(output[0](),
                                                                                     BaseException):
