@@ -1,6 +1,6 @@
-# IGT
+![IGT](/grader/main/src/assets/images/logo_blue.png)
 
-Intelligent Grading Tool
+# Intelligent Grading Tool
 
 Copyright (C) 2018 Deb Banerji (<debkbanerji@gmail.com>) and contributors
 
