@@ -397,6 +397,7 @@ export class InitializeDirectoryService {
                     latestVersion: newTestData['version'],
                     author: newTestData['author'],
                     contactLink: newTestData['contactLink'],
+                    autoApplyText: newTestData['autoApplyText'],
                     notes: newTestData['notes'],
                     expectedException: newTestData['expectedException'],
                     versions: [
@@ -410,6 +411,7 @@ export class InitializeDirectoryService {
                     latestVersion: newTestData['version'],
                     author: newTestData['author'],
                     contactLink: newTestData['contactLink'],
+                    autoApplyText: newTestData['autoApplyText'],
                     notes: newTestData['notes'],
                     expectedException: newTestData['expectedException'],
                     versions: versionsArray.concat(versionsArray.indexOf(newTestData['points']) >= 0 ? [] : [
@@ -473,12 +475,12 @@ export class InitializeDirectoryService {
             }
 
             // get test properties from docblock
-            const propertyRegex = /@(points|version|author|contactLink|notes)(.*)([\r|\n]* *\* [^@].*)*/gim;
+            const propertyRegex = /@(points|version|author|contactLink|autoApplyText|notes)(.*)([\r|\n]* *\* [^@].*)*/gim;
             const propertyMatches = testMatch.match(propertyRegex);
             for (let j = 0; j < propertyMatches.length; j++) {
                 const propertyMatch = propertyMatches[j].replace(/ *[\r|\n]* *\* */gim, ' ');
-                const tag = propertyMatch.match(/@(points|version|author|contactLink|notes) /gim)[0].replace('@', '').replace(' ', '');
-                let tagVal: any = propertyMatch.split(/@(points|version|author|contactLink|notes) /gim)[2];
+                const tag = propertyMatch.match(/@(points|version|author|contactLink|autoApplyText|notes) /gim)[0].replace('@', '').replace(' ', '');
+                let tagVal: any = propertyMatch.split(/@(points|version|author|contactLink|autoApplyText|notes) /gim)[2];
                 if (tag === 'points' || tag === 'version') {
                     tagVal = Number(tagVal);
                 }
@@ -507,12 +509,12 @@ export class InitializeDirectoryService {
             testData['name'] = defSplit[defSplit.length - 1].split('(')[0];
 
             // get test properties from docblock
-            const propertyRegex = /:(points|version|author|contactLink|notes):((.*)(([\r|\n]+)([ |\t]*)((?!(:|"| )).*))*)/gim;
+            const propertyRegex = /:(points|version|author|contactLink|autoApplyText|notes):((.*)(([\r|\n]+)([ |\t]*)((?!(:|"| )).*))*)/gim;
             const propertyMatches = testMatch.match(propertyRegex);
             for (let j = 0; j < propertyMatches.length; j++) {
                 const propertyMatch = propertyMatches[j].replace(/ *[\r|\n]* *\* */gim, ' ');
-                const tag = propertyMatch.match(/:(points|version|author|contactLink|notes): */gim)[0].replace(/:/g, '').replace(/ /g, '');
-                let tagVal: any = propertyMatch.split(/:(points|version|author|contactLink|notes): */gim)[2].replace(/([ \r\n\t])+/g, ' ').trim();
+                const tag = propertyMatch.match(/:(points|version|author|contactLink|autoApplyText|notes): */gim)[0].replace(/:/g, '').replace(/ /g, '');
+                let tagVal: any = propertyMatch.split(/:(points|version|author|contactLink|autoApplyText|notes): */gim)[2].replace(/([ \r\n\t])+/g, ' ').trim();
                 if (tag === 'points' || tag === 'version') {
                     tagVal = Number(tagVal);
                 }

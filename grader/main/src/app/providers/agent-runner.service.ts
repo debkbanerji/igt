@@ -139,7 +139,15 @@ export class AgentRunnerService {
                         isTest: true
                     };
                     if (agentOutput.tests.failures.indexOf(testName) > -1) {
-                        graderData.unresolvedRubricItems.push(testData);
+                        if (rawTestData.autoApplyText) {
+                            graderData.appliedRubricItems.push({
+                                points: testData.points,
+                                comment: rawTestData.autoApplyText,
+                                items: [testData]
+                            });
+                        } else {
+                            graderData.unresolvedRubricItems.push(testData);
+                        }
                         graderData.testPointsLost += testData.points;
                     } else {
                         graderData.skippedRubricItems.push(testData);

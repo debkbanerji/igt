@@ -56,6 +56,10 @@ public class MusicTests {
      * @version 2
      * @author Deb Banerji
      * @contactLink mailto:debkbanerji@gmail.com
+     * @autoApplyText if this field exists and this test fails, this text will be
+     *      applied as a comment automatically and the item will be resolved. The grader
+     *      may still unresolve the item and apply a different comment, but it's best to
+     *      reserve this field for tests whose reasons for failure are very predictable
      * @notes test second line
      */
     @Test(timeout = TIMEOUT)
