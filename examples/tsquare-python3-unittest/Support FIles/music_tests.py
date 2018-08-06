@@ -15,6 +15,10 @@ TIMEOUT_SECONDS = 1
 #      updating any tests, or patching may behave unexpectedly (if I ever get around to implementing it)
 # author: name of who wrote the test
 # contactLink: link to contact the author of the test (a mailto is usually good for this)
+# autoApplyText: if this field exists and the test fails, this text will be
+#      applied as a comment automatically and the item will be resolved. The grader
+#      may still unresolve the item and apply a different comment, but it's best to
+#      reserve this field for tests whose reasons for failure are very predictable
 # notes: test notes
 #
 #
@@ -47,10 +51,7 @@ class MusicTests(unittest.TestCase):
         :version: 2
         :author: Deb Banerji
         :contactLink: mailto:debkbanerji@gmail.com
-        :autoApplyText: if this field exists and this test fails, this text will be
-            applied as a comment automatically and the item will be resolved. The grader
-            may still unresolve the item and apply a different comment, but it's best to
-            reserve this field for tests whose reasons for failure are very predictable
+        :autoApplyText: did not hold dancing in high enough regard
         :notes: test second line
         """
         self.assertEqual('this dance', music.what_we_could_have_lived_together())
