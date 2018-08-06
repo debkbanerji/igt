@@ -1,14 +1,17 @@
 /* You can add global styles to this file, and also import other style files */
 @import "assets/css/bootstrap.min.css";
-@import "assets/css/candy-app-theme.scss";
+@import '~@angular/material/theming';
 @import "assets/css/prism.css";
+
+$app-primary: mat-palette($mat-indigo);
+$app-warn: mat-palette($mat-red);
+
+$app-light-theme: mat-light-theme($app-primary, $app-primary, $app-warn);
+@include angular-material-theme($app-light-theme);
 
 .dark-theme {
     color: $light-primary-text;
-    $candy-app-primary: mat-palette($mat-indigo);
-    $candy-app-accent: mat-palette($mat-pink, A200, A100, A400);
-    $candy-app-warn: mat-palette($mat-red);
-    $dark-theme: mat-dark-theme($candy-app-accent, $candy-app-accent, $candy-app-warn);
+    $dark-theme: mat-dark-theme($app-primary, $app-primary, $app-warn);
 
     @include angular-material-theme($dark-theme);
 }
