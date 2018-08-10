@@ -56,10 +56,12 @@ export class AgentRunnerService {
         }
 
         let agentOutput;
-        if (graderConfig.language === 'java8') {
+        if (graderConfig.language === 'java8' || graderConfig.language === 'java10') {
             let javaVersion = 0;
             if (graderConfig.language === 'java8') {
                 javaVersion = 8;
+            } else if (graderConfig.language === 'java10') {
+                javaVersion = 10;
             }
             if (graderConfig.gradingStyle === 'tests') {
                 agentOutput = this.runJavaAgent(graderConfig, javaVersion, tempDir, true, graderConfig.junitVersion);
@@ -85,7 +87,7 @@ export class AgentRunnerService {
             graderData.checkstyle = agentOutput.checkstyle;
         }
 
-        if (graderConfig.language === 'java8') {
+        if (graderConfig.language === 'java8' || graderConfig.language === 'java10') {
             graderData.compile = agentOutput.compile;
             graderData.declaredJavaEntities = {
                 fields: agentOutput.declaredFields,
@@ -118,7 +120,7 @@ export class AgentRunnerService {
 
             graderData.testPointsLost = 0;
             let shouldIntegrateTestData = false;
-            if (graderConfig.language === 'java8') {
+            if (graderConfig.language === 'java8' || graderConfig.language === 'java10') {
                 shouldIntegrateTestData = graderData.compile.success;
             } else if (graderConfig.language === 'python3') {
                 shouldIntegrateTestData = !agentOutput.errorOutput;
@@ -160,7 +162,7 @@ export class AgentRunnerService {
             }
         } else if (graderConfig.gradingStyle === 'output') {
             // Output is different for java versus python
-            if (graderConfig.language === 'java8') {
+            if (graderConfig.language === 'java8' || graderConfig.language === 'java10') {
                 graderData.printedOutput = agentOutput.output;
             } else if (graderConfig.language === 'python3') {
                 graderData.printedOutput = agentOutput.printedOutput;

@@ -96,7 +96,7 @@ export class FileInterfaceService {
         submission = {
             directoryName: submissionDirectoryName,
         };
-        submission.compiledLanguage = this.graderConfig.language === 'java8';
+        submission.compiledLanguage = this.graderConfig.language === 'java8' || this.graderConfig.language === 'java10';
         const graderDataPath = mainProcess.join(submissionDirectoryPath, this.directoryConfig.GRADER_DATA_FILE_NAME);
         const graderDataString = mainProcess.readFile(graderDataPath);
         const graderData = JSON.parse(graderDataString);
@@ -214,7 +214,7 @@ export class FileInterfaceService {
         for (let i = 0; i < this.graderConfig.supportFiles.length; i++) {
             const fileName = this.graderConfig.supportFiles[i].toString();
             // let isTestsFile = false;
-            // if (this.graderConfig.language === 'java8') {
+            // if (this.graderConfig.language === 'java8' || this.graderConfig.language === 'java10') {
             //     isTestsFile = this.graderConfig.testClassName + '.java' !== fileName;
             // } else if (this.graderConfig.language === 'python3') {
             //     isTestsFile = this.graderConfig.testFileName === fileName;
@@ -296,7 +296,7 @@ export class FileInterfaceService {
             mainProcess.makeDir(IDEProjectDirectory);
         }
         const targetDirectory = mainProcess.join(IDEProjectDirectory, submissionDirectory);
-        if (this.graderConfig.language === 'java8') {
+        if (this.graderConfig.language === 'java8' || this.graderConfig.language === 'java10') {
             return this.intellijProjectGeneratorService.generateProject(
                 this.graderConfig,
                 submissionDirectory,
