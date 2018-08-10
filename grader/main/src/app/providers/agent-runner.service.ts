@@ -57,10 +57,14 @@ export class AgentRunnerService {
 
         let agentOutput;
         if (graderConfig.language === 'java8') {
+            let javaVersion = 0;
+            if (graderConfig.language === 'java8') {
+                javaVersion = 8;
+            }
             if (graderConfig.gradingStyle === 'tests') {
-                agentOutput = this.runJava8Agent(graderConfig, tempDir, true, graderConfig.junitVersion);
+                agentOutput = this.runJavaAgent(graderConfig, javaVersion, tempDir, true, graderConfig.junitVersion);
             } else {
-                agentOutput = this.runJava8Agent(graderConfig, tempDir, false, -1);
+                agentOutput = this.runJavaAgent(graderConfig, javaVersion, tempDir, false, -1);
             }
         } else if (graderConfig.language === 'python3') {
             if (graderConfig.gradingStyle === 'tests') {
@@ -170,7 +174,7 @@ export class AgentRunnerService {
     }
 
 
-    private runJava8Agent(graderConfig: any, targetDir: string, isTest: boolean, junitVersion: number): any {
+    private runJavaAgent(graderConfig: any, javaVersion: number, targetDir: string, isTest: boolean, junitVersion: number): any {
         const agentOutputFilePath = mainProcess.join(targetDir, this.directoryConfig.AGENT_OUTPUT_FILE_NAME);
 
         let checkStylePath = 'none';
@@ -183,7 +187,9 @@ export class AgentRunnerService {
 
         if (isTest) {
             if (junitVersion === 4) {
-                mainProcess.runJava8Junit4GradingAgent(targetDir,
+                mainProcess.runJavaJunit4GradingAgent(
+                    javaVersion,
+                    targetDir,
                     graderConfig.testClassName,
                     settings.javaCommand,
                     settings.javaCompilerCommand,
@@ -191,7 +197,9 @@ export class AgentRunnerService {
                     agentOutputFilePath,
                     graderConfig.studentFiles);
             } else if (junitVersion === 5) {
-                mainProcess.runJava8Junit5GradingAgent(targetDir,
+                mainProcess.runJavaJunit5GradingAgent(
+                    javaVersion,
+                    targetDir,
                     graderConfig.testClassName,
                     settings.javaCommand,
                     settings.javaCompilerCommand,
@@ -202,7 +210,9 @@ export class AgentRunnerService {
                 throw new Error('Unrecognized JUnit Version: ' + junitVersion);
             }
         } else if (!isTest) {
-            mainProcess.runJava8OutputGradingAgent(targetDir,
+            mainProcess.runJavaOutputGradingAgent(
+                javaVersion,
+                targetDir,
                 graderConfig.mainClassName,
                 settings.javaCommand,
                 settings.javaCompilerCommand,
