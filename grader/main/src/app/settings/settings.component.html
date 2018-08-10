@@ -46,6 +46,8 @@
                             <mat-card-content>
                                 <div class="grader-config-input-container">
                                     <p class="language-header">Java Setup</p>
+                                    <p>Supported versions: 8</p>
+                                    <p class="text-red">Warning: When grading a submission, make sure the version of Java these commands correspond to matches the version specified in the submission's config file.</p>
                                     <b class="grader-config-input-label">Java Command</b>
                                     <br>
                                     "<span class="grader-config-info small-padding-right small-padding-left">
@@ -81,7 +83,7 @@
                                 </span>"
                                     <br>
                                     <p>
-                                        <span class="text-red">Warning: It is highly recommended that you use an interpreter that supports sandboxing, such as a sandboxed version of PyPy</span>
+                                        <span class="text-red">Warning: It is highly recommended that you use an interpreter that supports sandboxing, such as a sandboxed version of PyPy.</span>
                                     </p>
                                 </div>
                             </mat-card-content>
@@ -150,18 +152,18 @@
                         </button>
                     </mat-card-content>
                 </mat-card>
-            <div id="finish-button-outer-container">
-                <div id="finish-button-container">
-                    <!--<button mat-raised-button *ngIf="!mustInitialize"-->
-                    <!--class="btn-danger btn-raised finish-button" (click)="exitWithoutSaving()">-->
-                    <!--Exit Without Saving-->
-                    <!--</button>-->
-                    <!--<button mat-raised-button *ngIf="!mustInitialize"-->
-                    <!--class="btn-danger btn-raised finish-button" (click)="resetSettings()">-->
-                    <!--Delete Stored Settings-->
-                    <!--</button>-->
-                    <button mat-raised-button
-                            *ngIf="settings.graderName
+                <div id="finish-button-outer-container">
+                    <div id="finish-button-container">
+                        <!--<button mat-raised-button *ngIf="!mustInitialize"-->
+                        <!--class="btn-danger btn-raised finish-button" (click)="exitWithoutSaving()">-->
+                        <!--Exit Without Saving-->
+                        <!--</button>-->
+                        <!--<button mat-raised-button *ngIf="!mustInitialize"-->
+                        <!--class="btn-danger btn-raised finish-button" (click)="resetSettings()">-->
+                        <!--Delete Stored Settings-->
+                        <!--</button>-->
+                        <button mat-raised-button
+                                *ngIf="settings.graderName
                              && settings.graderName.length > 0"
                                 class="btn-success btn-raised finish-button" (click)="saveSettings()">
                             Save Settings
