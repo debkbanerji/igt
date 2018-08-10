@@ -115,7 +115,7 @@ export class InitializeDirectoryService {
             mainProcess.writeToFile(testInfoFilePath, testInfoString);
 
             let parsedTestData;
-            if (config.language === 'java8') {
+            if (config.language === 'java8' || config.language === 'java10') {
                 if (config.junitVersion === 4 || config.junitVersion === 5) {
                     const junitFileName = this.graderConfig.testClassName + '.java';
                     const junitFilePath = mainProcess.join(graderSupportFilesPath, junitFileName);

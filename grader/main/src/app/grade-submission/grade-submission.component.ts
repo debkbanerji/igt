@@ -114,7 +114,7 @@ export class GradeSubmissionComponent implements OnInit, OnDestroy, AfterViewIni
             this.graderData = this.fileInterface.getGraderData(this.directoryName);
             this.autocompleteData = this.fileInterface.getAutocompleteData();
             if (this.graderConfig.gradingStyle === 'tests') {
-                if (this.graderConfig.language === 'java8') {
+                if (this.graderConfig.language === 'java8' || this.graderConfig.language === 'java10') {
                     this.testsFile = this.fileInterface.getJavaTestsFile();
                 } else if (this.graderConfig.language === 'python3') {
                     this.testsFile = this.fileInterface.getPythonTestsFile();
@@ -127,7 +127,7 @@ export class GradeSubmissionComponent implements OnInit, OnDestroy, AfterViewIni
             if (this.submittedFiles.length > 0) {
                 this.activeFile = this.submittedFiles[0].name;
             }
-            this.compiledLanguage = (this.graderConfig.language === 'java8');
+            this.compiledLanguage = (this.graderConfig.language === 'java8' || this.graderConfig.language === 'java10');
             if (this.compiledLanguage) {
                 if (this.graderData.compile) {
                     if (this.graderData.checkstyle) {
@@ -203,7 +203,7 @@ export class GradeSubmissionComponent implements OnInit, OnDestroy, AfterViewIni
             });
 
             this.IDEProjectPath = this.fileInterface.getIDEProjectPath(this.directoryName);
-            if (this.graderConfig.language === 'java8') {
+            if (this.graderConfig.language === 'java8' || this.graderConfig.language === 'java10') {
                 this.IDEScript = this.graderSettings.intellijScript;
             } else if (this.graderConfig.language === 'python3') {
                 this.IDEScript = this.graderSettings.pycharmScript;
@@ -870,7 +870,7 @@ export class GradeSubmissionComponent implements OnInit, OnDestroy, AfterViewIni
     public openIDEProject = function () {
         const component = this;
         let IDEScriptPath;
-        if (component.graderConfig.language === 'java8') {
+        if (component.graderConfig.language === 'java8' || component.graderConfig.language === 'java10') {
             IDEScriptPath = component.graderSettings.intellijScript;
         } else if (component.graderConfig.language === 'python3') {
             IDEScriptPath = component.graderSettings.pycharmScript;

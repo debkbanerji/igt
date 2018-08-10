@@ -120,7 +120,7 @@ export class IntellijProjectGeneratorService {
         '    <ConfirmationsSetting value="0" id="Add" />\n' +
         '    <ConfirmationsSetting value="0" id="Remove" />\n' +
         '  </component>\n' +
-        '  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" assert-keyword="true" jdk-15="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">\n' +
+        '  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_JAVA_VERSION" default="true" assert-keyword="true" jdk-15="true" project-jdk-name="1.JAVA_VERSION" project-jdk-type="JavaSDK">\n' +
         '    <output url="file://$PROJECT_DIR$/out" />\n' +
         '  </component>\n' +
         '</project>';
@@ -179,9 +179,15 @@ export class IntellijProjectGeneratorService {
         mainProcess.writeToFile(modulesFilePath, component.MODULES_FILE_CONTENT.replace('SUBMISSION_DIRECTORY', submissionDirectory)
             .replace('SUBMISSION_DIRECTORY', submissionDirectory));
 
+        let javaVersion = '0';
+        if (graderConfig.language === 'java8') {
+            javaVersion = '8';
+        } else if (graderConfig.language === 'java10') {
+            javaVersion = '10';
+        }
 
         const miscFilePath = mainProcess.join(ideaFolderPath, 'misc.xml');
-        mainProcess.writeToFile(miscFilePath, component.MISC_FILE_CONTENT);
+        mainProcess.writeToFile(miscFilePath, component.MISC_FILE_CONTENT.replace('JAVA_VERSION', javaVersion).replace('JAVA_VERSION', javaVersion));
 
         return targetFolder;
     };

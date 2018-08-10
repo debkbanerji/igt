@@ -1,0 +1,136 @@
+{
+    "submissionStyle": "canvas",
+    "language": "python3",
+    "gradingStyle": "output",
+    "mainFileName": "music_runner.py",
+    "studentFiles": [
+        "music.py"
+    ],
+    "supportFiles": [
+        "music_runner.py",
+        "song_title_helper.py",
+        "grading-notes.md"
+    ],
+    "pointBasedComments": {
+        "belowOrEqual": {
+            "40": "In the future, feel free to go to office hours if you need any help with your homework."
+        },
+        "aboveOrEqual": {
+            "80": "Good work!",
+            "85": "Nice work!",
+            "90": "Well done!",
+            "95": "Excellent work!",
+            "100": "Fantastic work!"
+        }
+    },
+    "basePoints": 100,
+    "maxPoints": 100,
+    "dictionaryItems": [
+        "def",
+        "SomeMadeUpWord",
+        "This is a list of words you want to add to the english dictionary so that it doesn't flag them as spelling mistakes"
+    ],
+    "autocomplete": {
+        "commonRubricItemComments": [
+            "Autocomplete for a common rubric item comment"
+        ],
+        "commonOptionalRubricItemComments": [
+            "Autocomplete for a common optional rubric item comment"
+        ],
+        "commonAdditionalComments": [
+            "Autocomplete for an additional comment"
+        ]
+    },
+    "rubricItems": [
+        {
+            "name": "Bad enunciation",
+            "notes": "Dummy negative rubric item. Note that the regexes don't actually mean anything, they're just to check that regex detection works",
+            "points": -5,
+            "author": "Deb Banerji",
+            "contactLink": "mailto:debkbanerji@gmail.com",
+            "regexes": [
+                "def"
+            ],
+            "badRegexes": [
+                "TODO"
+            ],
+            "goodRegexes": [
+                "return"
+            ]
+        },
+        {
+            "name": "Good Vocals",
+            "notes": "Dummy positive rubric item",
+            "contactLink": "mailto:debkbanerji@gmail.com",
+            "points": 5
+        }
+    ],
+    "optionalRubricItems": [
+        {
+            "name": "Sample Optional Rubric Item",
+            "notes": "Note that optional rubric items also support regexes, notes, authors and contact links. They can also be applied multiple times if they contain the 'maxApplications' field. If an optional rubric item contains the 'hintKey' field, the grader can automatically try to apply the item during preprocessing based on certain conditions (examples below)",
+            "points": -5,
+            "author": "Deb Banerji",
+            "contactLink": "mailto:debkbanerji@gmail.com",
+            "maxApplications": 2,
+            "regexes": [
+                "def"
+            ],
+            "badRegexes": [
+                "TODO"
+            ],
+            "goodRegexes": [
+                "return"
+            ]
+        },
+        {
+            "name": "Print statements in code",
+            "points": -5,
+            "badRegexes": [
+                "print"
+            ]
+        },
+        {
+            "name": "Forbidden statement use",
+            "points": -5,
+            "badRegexes": [
+                "EVILREGEXHERE"
+            ]
+        },
+        {
+            "name": "Missing or invalid author information",
+            "points": -2,
+            "regexes": [
+                "(@author)|(@GTID)|(@userid)"
+            ],
+            "badRegexes": [
+                "@author.*your.*((name)|(id))"
+            ]
+        },
+        {
+            "name": "Extra Credit",
+            "notes": "For no good reason",
+            "points": 10
+        },
+        {
+            "name": "More Extra Credit",
+            "notes": "Because why not",
+            "maxApplications": 5,
+            "points": 2
+        },
+        {
+            "hintKey": "syntaxError",
+            "name": "Could not run code due to syntax error",
+            "notes": "Please check the syntax error output",
+            "maxApplications": 1,
+            "points": -100
+        },
+        {
+            "hintKey": "nonSubmit",
+            "name": "Missing one or more submission files",
+            "notes": "Please check the submitted files",
+            "maxApplications": 1,
+            "points": -100
+        }
+    ]
+}
