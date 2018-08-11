@@ -216,6 +216,7 @@ export class AgentRunnerService {
                 javaVersion,
                 targetDir,
                 graderConfig.mainClassName,
+                graderConfig.mainClassTimeout,
                 settings.javaCommand,
                 settings.javaCompilerCommand,
                 checkStylePath,

@@ -39,8 +39,6 @@ import java.lang.reflect.InvocationTargetException;
 
 public class Main {
 
-    private static int TIMEOUT_SECONDS = 5;
-
 //    private static class TestPointValueListener extends Java8BaseListener {
 ////        private Java8Parser parser;
 //        private HashMap<String, Double> values;
@@ -70,9 +68,10 @@ public class Main {
         Command Line Arguments:
         args[0]: Path to target directory
         args[1]: Main class (without .java extension) - Ex: CodeRunner
-        args[2]: Java command - Ex: java
-        args[3]: Java compiler command - Ex: javac
-        args[4]: path to checkstyle file, or 'none' if checkstyle audit does not need to be run
+        args[2]: Main class timeout in milliseconds
+        args[3]: Java command - Ex: java
+        args[4]: Java compiler command - Ex: javac
+        args[5]: path to checkstyle file, or 'none' if checkstyle audit does not need to be run
         Remaining args: student files
          */
         Options options = new Options();
@@ -94,7 +93,7 @@ public class Main {
 //        }
 
         args = cmd.getArgs();
-        if (args.length < 5) {
+        if (args.length < 6) {
             System.err.println("error: expected at least five positional arguments; try --help");
             System.exit(1);
         }
@@ -146,7 +145,7 @@ public class Main {
             }
 
             List<String> compileCommand = new ArrayList<>();
-            compileCommand.add(args[3]);
+            compileCommand.add(args[4]);
             compileCommand.add("-Xlint:unchecked");
             compileCommand.add("-cp");
             compileCommand.add(System.getProperty("java.class.path") + File.pathSeparator + ".");
@@ -174,14 +173,14 @@ public class Main {
                 return;
             }
 
-            if (!args[4].equals("none")) {
+            if (!args[5].equals("none")) {
                 List<String> checkstyleCommand = new ArrayList<>();
-                checkstyleCommand.add(args[2]);
+                checkstyleCommand.add(args[3]);
                 checkstyleCommand.add("-cp");
                 checkstyleCommand.add(System.getProperty("java.class.path") + File.pathSeparator + ".");
                 checkstyleCommand.add("com.puppycrawl.tools.checkstyle.Main"); // className
                 checkstyleCommand.add("-c");
-                checkstyleCommand.add(args[4]);
+                checkstyleCommand.add(args[5]);
                 checkstyleCommand.addAll(checkstyleFiles);
                 Process checkstyleProcess = new ProcessBuilder()
                         .command(checkstyleCommand)
@@ -211,7 +210,7 @@ public class Main {
 
             JSONObject declaredFieldsObject = new JSONObject();
             JSONObject declaredMethodsObject = new JSONObject();
-            for (int i = 5; i < args.length; i++) {
+            for (int i = 6; i < args.length; i++) {
                 Class fieldsTestClass = classLoader.loadClass(args[i]);
                 Field[] declaredFields = fieldsTestClass.getDeclaredFields();
                 JSONArray fieldsArray = new JSONArray();
@@ -256,7 +255,7 @@ public class Main {
             Class mainClass = classLoader.loadClass(args[1]);
             Method mainMethod = mainClass.getMethod("main", String[].class);
 
-            runMethodInAnotherThread(mainClassSecurityManager, mainMethod, TIMEOUT_SECONDS, null);
+            runMethodInAnotherThread(mainClassSecurityManager, mainMethod, Integer.parseInt(args[2]), null);
 
             // Put things back
             // Note that the security manager should only be disabled for the other thread
@@ -284,7 +283,7 @@ public class Main {
         return result;
     }
 
-    public static void runMethodInAnotherThread(final MainClassSecurityManager securityManager, Method mainMethod, int timeoutSeconds, String[] params) throws Exception {
+    public static void runMethodInAnotherThread(final MainClassSecurityManager securityManager, Method mainMethod, int timeoutMilliSeconds, String[] params) throws Exception {
 
         Thread thread = new Thread(new Runnable() {
 
@@ -300,10 +299,10 @@ public class Main {
                     Future<String> future = executor.submit(new MainTask(mainMethod, securityManager));
 
                     try {
-                        System.out.println(future.get(timeoutSeconds, TimeUnit.SECONDS));
+                        System.out.println(future.get(timeoutMilliSeconds, TimeUnit.MILLISECONDS));
                     } catch (TimeoutException e) {
                         future.cancel(true);
-                        System.out.println("\nCODE TIMED OUT AFTER " + timeoutSeconds + " SECONDS");
+                        System.out.println("\nCODE TIMED OUT AFTER " + timeoutMilliSeconds + " MILLISECONDS");
                     } catch (InterruptedException | ExecutionException e) {
                         System.out.println("\nEXCEPTION WHILE RUNNING CODE\n");
                         System.out.println(StackTraceToString(e));

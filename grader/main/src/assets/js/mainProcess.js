@@ -76,16 +76,16 @@ mainProcess.unzip = function (source, destination, parentPath) {
 };
 
 mainProcess.runJavaJunit4GradingAgent = function (javaVersion, targetDirectory, testClass, javaCommand, javaCompilerCommand, checkstylePath, outputFilepath, studentFiles) {
-    return ipcRenderer.sendSync('runJavaGradingJar', 'java-' + javaVersion + '-junit-4-runner-1.0.jar', targetDirectory, testClass, javaCommand, javaCompilerCommand, checkstylePath, outputFilepath, studentFiles);
+    return ipcRenderer.sendSync('runJavaGradingJar', 'java-' + javaVersion + '-junit-4-runner-1.0.jar', targetDirectory, testClass, -1, javaCommand, javaCompilerCommand, checkstylePath, outputFilepath, studentFiles);
 };
 
 
 mainProcess.runJavaJunit5GradingAgent = function (javaVersion, targetDirectory, testClass, javaCommand, javaCompilerCommand, checkstylePath, outputFilepath, studentFiles) {
-    return ipcRenderer.sendSync('runJavaGradingJar', 'java-' + javaVersion + '-junit-5-runner-1.0.jar', targetDirectory, testClass, javaCommand, javaCompilerCommand, checkstylePath, outputFilepath, studentFiles);
+    return ipcRenderer.sendSync('runJavaGradingJar', 'java-' + javaVersion + '-junit-5-runner-1.0.jar', targetDirectory, testClass, -1, javaCommand, javaCompilerCommand, checkstylePath, outputFilepath, studentFiles);
 };
 
-mainProcess.runJavaOutputGradingAgent = function (javaVersion, targetDirectory, mainClass, javaCommand, javaCompilerCommand, checkstylePath, outputFilepath, studentFiles) {
-    return ipcRenderer.sendSync('runJavaGradingJar', 'java-' + javaVersion + '-output-runner-1.0.jar', targetDirectory, mainClass, javaCommand, javaCompilerCommand, checkstylePath, outputFilepath, studentFiles);
+mainProcess.runJavaOutputGradingAgent = function (javaVersion, targetDirectory, mainClass, mainClassTimeout, javaCommand, javaCompilerCommand, checkstylePath, outputFilepath, studentFiles) {
+    return ipcRenderer.sendSync('runJavaGradingJar', 'java-' + javaVersion + '-output-runner-1.0.jar', targetDirectory, mainClass, mainClassTimeout, javaCommand, javaCompilerCommand, checkstylePath, outputFilepath, studentFiles);
 };
 
 mainProcess.runPython3UnitTestGradingAgent = function (targetDirectory, agentFile, python3Command, agentOutputFilePath) {

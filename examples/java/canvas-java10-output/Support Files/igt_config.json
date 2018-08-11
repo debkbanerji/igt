@@ -3,6 +3,7 @@
     "language": "java10",
     "gradingStyle": "output",
     "mainClassName": "MusicRunner",
+    "mainClassTimeout": 3000,
     "studentFiles": [
         "Music.java"
     ],

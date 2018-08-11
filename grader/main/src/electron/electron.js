@@ -209,8 +209,11 @@ const deleteDirRecursively = function (path) {
     fs.rmdirSync(path);
 };
 
-ipcMain.on('runJavaGradingJar', (event, jarName, targetDirectory, testOrMainClass, javaCommand, javaCompilerCommand, checkstylePath, outputFilepath, studentFiles) => {
+ipcMain.on('runJavaGradingJar', (event, jarName, targetDirectory, testOrMainClass, mainClassTimeout, javaCommand, javaCompilerCommand, checkstylePath, outputFilepath, studentFiles) => {
     let args = ['-jar', pathUtils.join(jarPath, jarName), targetDirectory, testOrMainClass, javaCommand, javaCompilerCommand, checkstylePath];
+    if (mainClassTimeout >= 0) {
+        args.splice(4, 0, mainClassTimeout);
+    }
     studentFiles.forEach(function (file) {
         args.push(file.split(".java")[0])
     });
