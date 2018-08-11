@@ -62,7 +62,7 @@
                 </button>
                 <br>
                 <button mat-raised-button class="btn-info btn-raised bottom-button" (click)="openDevTools()">
-                    <span>Debug Console</span>
+                    <span>Developer Tools</span>
                 </button>
                 <br>
                 <mat-slide-toggle [(ngModel)]="graderSettings.isDarkTheme"
@@ -74,13 +74,14 @@
         </div>
         <div class="bottom-right-container">
             <p>&#169; 2018 Deb Banerji</p>
-            <p>
-                <span class="external-link" (click)="openContactLink()">&#9993; Contact</span>
-            </p>
+            <p>Made with &#9829;</p>
             <p>
                 <span class="external-link" (click)="openSourceCodeLink()">
                     <span class="glyphicon glyphicon-link"></span> Source Code
                 </span>
+            </p>
+            <p>
+                <span class="external-link" (click)="openContactLink()">&#9993; Contact</span>
             </p>
         </div>
     </div>

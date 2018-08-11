@@ -1,7 +1,7 @@
 {
     "name": "igt",
     "productName": "igt",
-    "version": "2018.8.5",
+    "version": "2018.8.11",
     "license": "custom",
     "author": "Deb Banerji",
     "description": "Intelligent Grading Tool",
